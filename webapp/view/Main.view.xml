@@ -1,0 +1,406 @@
+<mvc:View controllerName="smm.hcmapp.dis.eecard3.controller.Main" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m" xmlns:semantic="sap.m.semantic" xmlns:f="sap.f" xmlns:card="sap.f.cards" xmlns:layout="sap.ui.layout"
+	xmlns:form="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:mchart="sap.suite.ui.microchart" xmlns:uicom="sap.suite.ui.commons"
+	xmlns:viz="sap.viz.ui5.controls" xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds" xmlns:viz.data="sap.viz.ui5.data">
+	<semantic:FullscreenPage id="fullScreenPage" showFooter="false" class="sapUiResponsiveContentPadding sapUiFioriObjectPage">
+		<semantic:content>
+			<Panel id="pnlCard" expandable="false" expanded="true" headerText="Talent Card" width="auto" expand="onExpand">
+				<headerToolbar>
+					<OverflowToolbar height="3rem">
+						<Title text="Employee Card"/>
+						<ToolbarSpacer/>
+						<Button icon="sap-icon://pdf-attachment" press="onPdfExport" text="Export to PDF" tooltip="Export to PDF"
+							visible="{= !${device>/system/phone}}"/>
+					</OverflowToolbar>
+				</headerToolbar>
+				<f:GridContainer id="grid1" class="sapUiSmallMargin" snapToRow="true" inlineBlockLayout="false" allowDenseFill="false" width="100%">
+					<f:layout>
+						<f:GridContainerSettings columns="12" rowSize="1.3rem" columnSize="5rem" gap="1rem"/>
+					</f:layout>
+					<f:layoutM>
+						<f:GridContainerSettings columns="8" rowSize="1.3rem" columnSize="5rem" gap="1rem"/>
+					</f:layoutM>
+					<f:layoutS>
+						<f:GridContainerSettings columns="6" rowSize="2.0rem" columnSize="4.75rem" gap="0.25rem"/>
+					</f:layoutS>
+					<f:layoutXS>
+						<f:GridContainerSettings columns="4" rowSize="2.0rem" columnSize="4.75rem" gap="0.25rem"/>
+					</f:layoutXS>
+					<f:items>
+						<f:Card id="personalDataCard" class="sapUiSmallMargin">
+							<f:layoutData>
+								<f:GridContainerItemLayoutData columns="4" rows="17"/>
+							</f:layoutData>
+							<f:header>
+								<card:Header id="idPersDataCard"
+									title="{parts: [{path: 'tlCard>/EmployeeName/FormattedName'}, {path: 'tlCard>/EmployeeNumber'}], formatter:'.formatter.formatEmpName'}"
+									subtitle="{tlCard>/EmployeePositionLongtext}"
+									iconSrc="{path: 'tlCard>/toEmployeePicture/__metadata/media_src', formatter:'.formatter.formatImageURL'}"/>
+							</f:header>
+							<f:content>
+								<ScrollContainer height="32rem" vertical="true" width="100%">
+									<form:SimpleForm layout="ResponsiveGridLayout">
+										<form:content>
+											<!--<core:Title text="Personal Data"/>-->
+											<!--<ObjectStatus title="{parts: [{path: 'appParams>/Year'}, {value: false}], formatter:'.formatter.formatClass'}"-->
+											<!--	text="{tlCard>/toProfile/TalentClassOriText}" inverted="true"-->
+											<!--	state="{path: 'tlCard>/toProfile/TalentClassOri', formatter: '.formatter.getTalentClassState'}"/>-->
+											<!--<ObjectStatus title="{parts: [{path: 'appParams>/Year'}, {value: true}], formatter:'.formatter.formatClass'}"-->
+											<!--	text="{tlCard>/toProfile/TalentClassCaliText}" inverted="true"-->
+											<!--	state="{path: 'tlCard>/toProfile/TalentClassCali', formatter: '.formatter.getTalentClassState'}"/>-->
+											<Label text="Age"/>
+											<Text text="{path: 'tlCard>/Age', formatter:'.formatter.formatAge'}"/>
+											<Label text="Years of Service in SMM"/>
+											<Text text="{parts: [{path: 'tlCard>/Yos'}, {path: 'tlCard>/HireDate'}], formatter:'.formatter.formatYos'}"/>
+											<Label text="Years of Service in Current Position"/>
+											<Text text="{parts: [{path: 'tlCard>/YosPosition'}, {path: 'tlCard>/PositionDate'}], formatter:'.formatter.formatYosPos'}"/>
+											<Label text="Job Grade / PS Level"/>
+											<Text text="{parts: [{path: 'tlCard>/PayScaleGroup'}, {path: 'tlCard>/PayScaleLevel'}], formatter:'.formatter.formatPayScale'}"/>
+											<!--<core:Title text="Corporate Data"/>-->
+											<Label text="Directorate"/>
+											<Text text="{tlCard>/DirectorateText}"/>
+											<Label text="Division"/>
+											<Text text="{tlCard>/DivisionText}"/>
+											<Label text="Department"/>
+											<Text text="{tlCard>/DepartmentText}"/>
+											<Label text="Organization Structure"/>
+											<Text text="{tlCard>/BusUnitText}"/>
+											<Label text="Group"/>
+											<Text text="{tlCard>/BusinessAreaText}"/>
+											<Label text="Last Promotion"/>
+											<Text id="txLastPromo"
+												text="{ path: 'tlCard>/PromotionDate', type: 'sap.ui.model.type.Date', formatOptions: { UTC: true, style: 'long' }, constraints: { displayFormat: 'Date' } }"/>
+											<Label text="Last Rotation"/>
+											<Text id="txLastRotat"
+												text="{ path: 'tlCard>/RotationDate', type: 'sap.ui.model.type.Date', formatOptions: { UTC: true, style: 'long' }, constraints: { displayFormat: 'Date' } }"/>
+											<!--<Text text="{tlCard>/RotationPositionText}"/>-->
+											<Label text="Position Before Current"/>
+											<Text text="{tlCard>/BeforePositionText}"/>
+										</form:content>
+									</form:SimpleForm>
+								</ScrollContainer>
+							</f:content>
+						</f:Card>
+						<f:Card class="sapUiSmallMargin">
+							<f:layoutData>
+								<f:GridContainerItemLayoutData columns="4" rows="17"/>
+							</f:layoutData>
+							<f:header>
+								<card:Header title="Knowledge"/>
+							</f:header>
+							<f:content>
+								<VBox>
+									<ScrollContainer height="8rem" vertical="true" width="100%">
+										<FlexBox id="mchartStemBox" width="100%" renderType="Bare" justifyContent="Center">
+											<mchart:ComparisonMicroChart id="mchartStem" size="M" view="Normal" class="sapUiRFLContainer sapUiSmallMargin" press="press"
+												shrinkable="true" data="{ path: 'stem>/data', templateShareable: true }"
+												colorPalette="sapUiChartPaletteQualitativeHue1, sapUiChartPaletteQualitativeHue2, sapUiChartPaletteQualitativeHue3, sapUiChartPaletteQualitativeHue4, sapUiChartPaletteQualitativeHue5, sapUiChartPaletteQualitativeHue6">
+												<mchart:data>
+													<mchart:ComparisonMicroChartData title="{stem>StemText}" value="{stem>Count}"/>
+												</mchart:data>
+											</mchart:ComparisonMicroChart>
+										</FlexBox>
+									</ScrollContainer>
+									<ScrollContainer height="14.5rem" vertical="true" width="100%">
+										<FlexBox width="100%" renderType="Bare">
+											<List growing="true" growingThreshold="3"
+												items="{ path: 'training>/data', sorter: { path: 'JenisText', descending: false, group: true }, groupHeaderFactory: '.getGroupHeader' }">
+												<StandardListItem
+													title="{parts: [{path: 'training>TrainingName'}, {path: 'training>Tahun'}], formatter:'.formatter.formatTextWithBrackets'}"/>
+											</List>
+										</FlexBox>
+									</ScrollContainer>
+									<ScrollContainer height="11rem" vertical="true" width="100%">
+										<FlexBox width="100%" renderType="Bare">
+											<List growing="true" growingThreshold="3"
+												items="{ path: 'tlCard>/toEducation/results', sorter: { path: 'Category', descending: false, group: '.grouperEdu' }, groupHeaderFactory: '.getGroupHeader', templateShareable: true }">
+												<StandardListItem
+													title="{parts: [{path: 'tlCard>EstablishmentText'}, {path: 'tlCard>StudyBranch1Text'}, {path: 'tlCard>StudyBranch2Text'}, {path: 'tlCard>EndDate'}], formatter:'.formatter.formatEdu'}"
+													description="{tlCard>Institute}"/>
+											</List>
+										</FlexBox>
+									</ScrollContainer>
+								</VBox>
+							</f:content>
+						</f:Card>
+						<!--<f:Card class="sapUiSmallMargin">-->
+						<!--	<f:layoutData>-->
+						<!--		<f:GridContainerItemLayoutData columns="4" rows="5"/>-->
+						<!--	</f:layoutData>-->
+						<!--	<f:header>-->
+						<!--		<card:Header title="Technical Competency"/>-->
+						<!--	</f:header>-->
+						<!--	<f:content>-->
+						<!--		<FlexBox width="100%" renderType="Bare" justifyContent="Center" alignContent="Center" class="sapUiSmallMarginBottom sapUiSmallMarginTop">-->
+						<!--			<VBox alignContent="Center" justifyContent="Center">-->
+						<!--				<Text-->
+						<!--					text="{parts: [{path: 'tlCard>/EmployeePositionLongtext'}, {path: 'tlCard>/EmployeePositionId'}], formatter:'.formatter.formatEmpName'}"-->
+						<!--					textAlign="Center" width="100%"/>-->
+						<!--				<mchart:RadialMicroChart id="mchartRadTech" size="S"-->
+						<!--					percentage="{path: 'tlCard>/toProfile/SuitPercentTech', formatter:'.formatter.formatToNumber'}"-->
+						<!--					valueColor="{tlCard>/toProfile/SuitStateTech}" tooltip="" alignContent="Center" width="100%" class="sapUiTinyMarginTop"/>-->
+						<!--<mchart:RadialMicroChart size="S" percentage="90" valueColor="Good" tooltip="" alignContent="Center" width="100%" class="sapUiTinyMarginTop"/>-->
+						<!--			</VBox>-->
+						<!--		</FlexBox>-->
+						<!--	</f:content>-->
+						<!--</f:Card>-->
+						<!--<f:Card class="sapUiSmallMargin">-->
+						<!--	<f:layoutData>-->
+						<!--		<f:GridContainerItemLayoutData columns="4" rows="5"/>-->
+						<!--	</f:layoutData>-->
+						<!--	<f:header>-->
+						<!--		<card:Header title="Soft Competency"/>-->
+						<!--	</f:header>-->
+						<!--	<f:content>-->
+						<!--		<FlexBox width="100%" renderType="Bare" justifyContent="Center" alignContent="Center" class="sapUiSmallMarginBottom sapUiSmallMarginTop">-->
+						<!--			<VBox alignContent="Center" justifyContent="Center">-->
+						<!--				<Text-->
+						<!--					text="{parts: [{path: 'tlCard>/EmployeeJobtitleLongtext'}, {path: 'tlCard>/EmployeeJobtitleId'}], formatter:'.formatter.formatEmpName'}"-->
+						<!--					textAlign="Center" width="100%"/>-->
+						<!--				<mchart:RadialMicroChart id="mchartRadSoft" size="S"-->
+						<!--					percentage="{path: 'tlCard>/toProfile/SuitPercentSoft', formatter:'.formatter.formatToNumber'}"-->
+						<!--					valueColor="{tlCard>/toProfile/SuitStateSoft}" tooltip="" alignContent="Center" width="100%" class="sapUiTinyMarginTop"/>-->
+						<!--			</VBox>-->
+						<!--		</FlexBox>-->
+						<!--	</f:content>-->
+						<!--</f:Card>-->
+						<f:Card class="sapUiSmallMargin">
+							<f:layoutData>
+								<f:GridContainerItemLayoutData columns="4" rows="15"/>
+							</f:layoutData>
+							<f:header>
+								<card:Header title="Experience"/>
+							</f:header>
+							<f:content>
+								<ScrollContainer height="30rem" vertical="true" width="100%">
+									<FlexBox width="100%" renderType="Bare">
+										<List growing="true" growingThreshold="5"
+											items="{ path: 'tlCard>/toExperience/results', sorter: { path: 'Group', descending: false, group: '.grouperExp' }, groupHeaderFactory: '.getGroupHeader', templateShareable: true }">
+											<StandardListItem title="{parts: [{path: 'tlCard>PositionText'}, {path: 'tlCard>BeginDate'}], formatter:'.formatter.formatTextWithDash'}"
+												description="{tlCard>Employer}"/>
+										</List>
+									</FlexBox>
+								</ScrollContainer>
+							</f:content>
+						</f:Card>
+						<f:Card class="sapUiSmallMargin">
+							<f:layoutData>
+								<f:GridContainerItemLayoutData columns="4" rows="8"/>
+							</f:layoutData>
+							<f:header>
+								<card:Header title="Current Roles"/>
+							</f:header>
+							<f:content>
+								<ScrollContainer height="15rem" vertical="true" width="100%">
+									<FlexBox width="100%" renderType="Bare">
+										<List growing="true" growingThreshold="2" items="{ path: 'tlCard>/toCurrentRoles/results', templateShareable: true }">
+											<StandardListItem title="{tlCard>KpiName}" description="{tlCard>KpiDesc}"/>
+										</List>
+									</FlexBox>
+								</ScrollContainer>
+							</f:content>
+						</f:Card>
+						<f:Card class="sapUiSmallMargin">
+							<f:layoutData>
+								<f:GridContainerItemLayoutData columns="4" rows="6"/>
+							</f:layoutData>
+							<f:header>
+								<card:Header title="Development Program"/>
+							</f:header>
+							<f:content>
+								<ScrollContainer height="10rem" vertical="true" width="100%">
+									<FlexBox width="100%" renderType="Bare">
+										<List growing="true" growingThreshold="2" items="{ path: 'tlCard>/toDevProgram/results', templateShareable: true }">
+											<StandardListItem
+												title="{parts: [{path: 'tlCard>TahunAngkatan'}, {path: 'tlCard>Name'}, {path: 'tlCard>SubtypeId'}], formatter:'.formatter.formatDevProgram'}"/>
+										</List>
+									</FlexBox>
+								</ScrollContainer>
+							</f:content>
+						</f:Card>
+						<f:Card class="sapUiSmallMargin">
+							<f:layoutData>
+								<f:GridContainerItemLayoutData columns="4" rows="6"/>
+							</f:layoutData>
+							<f:header>
+								<card:Header title="PAT Record"/>
+							</f:header>
+							<f:content>
+								<FlexBox width="100%" renderType="Bare" justifyContent="Center" alignContent="Center" class="sapUiSmallMarginBottom sapUiMediumMarginTop"
+									height="6rem">
+									<mchart:ColumnMicroChart id="mchartPat" size="L" press="press" allowColumnLabels="true" height="100%" tooltip="">
+										<mchart:columns>
+											<mchart:ColumnMicroChartData value="{path: 'tlCard>/toPerformance/Value01', formatter:'.formatter.formatToNumber'}"
+												label="{tlCard>/toPerformance/Year01}" color="sapUiChartPaletteQualitativeHue3" tooltip=""
+												displayValue="{parts: [{path: 'tlCard>/toPerformance/Score01'}, {path: 'tlCard>/toPerformance/Rating01'}], formatter:'.formatter.formatTextWithBrackets'}"/>
+											<mchart:ColumnMicroChartData value="{path: 'tlCard>/toPerformance/Value02', formatter:'.formatter.formatToNumber'}"
+												label="{tlCard>/toPerformance/Year02}" color="sapUiChartPaletteQualitativeHue2" tooltip=""
+												displayValue="{parts: [{path: 'tlCard>/toPerformance/Score02'}, {path: 'tlCard>/toPerformance/Rating02'}], formatter:'.formatter.formatTextWithBrackets'}"/>
+											<mchart:ColumnMicroChartData value="{path: 'tlCard>/toPerformance/Value03', formatter:'.formatter.formatToNumber'}"
+												label="{tlCard>/toPerformance/Year03}" color="sapUiChartPaletteQualitativeHue1" tooltip=""
+												displayValue="{parts: [{path: 'tlCard>/toPerformance/Score03'}, {path: 'tlCard>/toPerformance/Rating03'}], formatter:'.formatter.formatTextWithBrackets'}"/>
+										</mchart:columns>
+									</mchart:ColumnMicroChart>
+								</FlexBox>
+							</f:content>
+						</f:Card>
+						<!--<f:Card class="sapUiSmallMargin">-->
+						<!--	<f:layoutData>-->
+						<!--		<f:GridContainerItemLayoutData columns="4" rows="9"/>-->
+						<!--	</f:layoutData>-->
+						<!--	<f:header>-->
+						<!--		<card:Header title="Attribute"/>-->
+						<!--	</f:header>-->
+						<!--	<f:content>-->
+						<!--		<ScrollContainer height="18rem" vertical="true" width="100%">-->
+						<!--			<FlexBox width="100%" renderType="Bare">-->
+						<!--				<List-->
+						<!--					items="{ path: 'tlCard>/toAttribute/results', sorter: { path: 'CategoryId', descending: false, group: '.grouperAtt' }, groupHeaderFactory: '.getGroupHeader', templateShareable: true }">-->
+						<!--					<StandardListItem title="{tlCard>AttributeText}" info="{tlCard>Value}" infoState="{tlCard>State}" wrapping="false"/>-->
+						<!--				</List>-->
+						<!--			</FlexBox>-->
+						<!--		</ScrollContainer>-->
+						<!--	</f:content>-->
+						<!--</f:Card>-->
+						<!--<f:Card class="sapUiSmallMargin">-->
+						<!--	<f:layoutData>-->
+						<!--		<f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 7 }" rows="10"/>-->
+						<!--	</f:layoutData>-->
+						<!--	<f:header>-->
+						<!--		<card:Header title="Leadership Assessment"/>-->
+						<!--	</f:header>-->
+						<!--	<f:content>-->
+						<!--		<FlexBox width="100%" renderType="Bare" justifyContent="Center" alignContent="Center">-->
+						<!--			<viz:VizFrame id="idVizFrameQua" uiConfig="{applicationSet:'fiori'}" vizType="bullet" height="19rem" width="100%">-->
+						<!--				<viz:dataset>-->
+						<!--					<viz.data:FlattenedDataset data="{/qualific}">-->
+						<!--						<viz.data:dimensions>-->
+						<!--							<viz.data:DimensionDefinition name="Qualification" value="{QualificationName}"/>-->
+						<!--						</viz.data:dimensions>-->
+						<!--						<viz.data:measures>-->
+						<!--							<viz.data:MeasureDefinition name="Requirement" value="{RequiredRating}"/>-->
+						<!--							<viz.data:MeasureDefinition name="Employee" value="{Rating}"/>-->
+						<!--							<viz.data:MeasureDefinition name="Maximum" value="{ScaleCount}"/>-->
+						<!--						</viz.data:measures>-->
+						<!--					</viz.data:FlattenedDataset>-->
+						<!--				</viz:dataset>-->
+						<!--				<viz:feeds>-->
+						<!--					<viz.feeds:FeedItem id='feedActualValues' uid="actualValues" type="Measure" values="Employee"/>-->
+						<!--					<viz.feeds:FeedItem id='feedTargetValues' uid="targetValues" type="Measure" values="Requirement"/>-->
+						<!--					<viz.feeds:FeedItem id='feedForecastValues' uid="forecastValues" type="Measure" values="Maximum"/>-->
+						<!--					<viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Qualification"/>-->
+						<!--				</viz:feeds>-->
+						<!--			</viz:VizFrame>-->
+						<!--		</FlexBox>-->
+						<!--	</f:content>-->
+						<!--</f:Card>-->
+						<f:Card class="sapUiSmallMargin">
+							<f:layoutData>
+								<f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 5 }" rows="10"/>
+							</f:layoutData>
+							<f:header>
+								<card:Header title="Performance - 360&#176;"/>
+							</f:header>
+							<f:content>
+								<FlexBox width="100%" renderType="Bare" justifyContent="Center" alignContent="Center">
+									<viz:VizFrame id="idVizFrame360" uiConfig="{applicationSet:'fiori'}" vizType="radar" height="19rem" width="100%">
+										<viz:dataset>
+											<viz.data:FlattenedDataset data="{/performa}">
+												<viz.data:dimensions>
+													<viz.data:DimensionDefinition name="Feedback" value="{Performance Name}"/>
+												</viz.data:dimensions>
+												<viz.data:measures>
+													<viz.data:MeasureDefinition name="Score" value="{Score}"/>
+												</viz.data:measures>
+											</viz.data:FlattenedDataset>
+										</viz:dataset>
+										<viz:feeds>
+											<viz.feeds:FeedItem id='valueAxisFeed' uid="valueAxis" type="Measure" values="Score"/>
+											<viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Feedback"/>
+										</viz:feeds>
+									</viz:VizFrame>
+								</FlexBox>
+							</f:content>
+						</f:Card>
+						<f:Card class="sapUiSmallMargin">
+							<f:layoutData>
+								<f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 7 }" rows="10"/>
+							</f:layoutData>
+							<f:header>
+								<card:Header title="Aspiration"/>
+							</f:header>
+							<f:content>
+								<ScrollContainer height="18rem" vertical="true" width="100%">
+									<VBox width="97%" renderType="Bare" height="100%" class="sapUiTinyMarginBeginEnd"
+										items="{ path: 'tlCard>/toAspiration/results', templateShareable: true }">
+										<VBox>
+											<Label text="{tlCard>Question}" design="Bold" class="sapUiSmallMarginTop" wrapping="true"/>
+											<TextArea value="{tlCard>Answer}" cols="50" editable="false" width="100%" growing="true"/>
+										</VBox>
+									</VBox>
+								</ScrollContainer>
+							</f:content>
+						</f:Card>
+						<f:Card class="sapUiSmallMargin">
+							<f:layoutData>
+								<f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 6 }" rows="8"/>
+							</f:layoutData>
+							<f:header>
+								<card:Header title="Positive Insight"/>
+							</f:header>
+							<f:content>
+								<ScrollContainer height="14rem" vertical="true" width="100%">
+									<FlexBox width="100%" renderType="Bare">
+										<List growing="true" growingThreshold="3"
+											items="{ path: 'tlCard>/toInsight/results', filters : [ { path : 'SubtypeId', operator : 'EQ', value1 : '0001'} ], templateShareable: true }">
+											<StandardListItem title="{tlCard>Comments}" wrapping="true"/>
+										</List>
+									</FlexBox>
+								</ScrollContainer>
+							</f:content>
+						</f:Card>
+						<f:Card class="sapUiSmallMargin">
+							<f:layoutData>
+								<f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 6 }" rows="8"/>
+							</f:layoutData>
+							<f:header>
+								<card:Header title="Constructive Insight"/>
+							</f:header>
+							<f:content>
+								<ScrollContainer height="14rem" vertical="true" width="100%">
+									<FlexBox width="100%" renderType="Bare">
+										<List growing="true" growingThreshold="3"
+											items="{ path: 'tlCard>/toInsight/results', filters : [ { path : 'SubtypeId', operator : 'EQ', value1 : '0002'} ], templateShareable: true }">
+											<StandardListItem title="{tlCard>Comments}" wrapping="true"/>
+										</List>
+									</FlexBox>
+								</ScrollContainer>
+							</f:content>
+						</f:Card>
+						<!--<f:Card class="sapUiSmallMargin">-->
+						<!--	<f:layoutData>-->
+						<!--		<f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 6 }" rows="8"/>-->
+						<!--	</f:layoutData>-->
+						<!--	<f:header>-->
+						<!--		<card:Header title="Supervisor Insight"/>-->
+						<!--	</f:header>-->
+						<!--	<f:content>-->
+						<!--		<ScrollContainer height="14rem" vertical="true" width="100%">-->
+						<!--			<VBox width="97%" renderType="Bare" height="100%" class="sapUiTinyMarginBeginEnd">-->
+						<!--				<Label text="Strength" design="Bold" class="sapUiSmallMarginTop"/>-->
+						<!--				<TextArea value="{tlCard>/toProfile/Strength}" editable="false" width="100%" growing="true" wrapping="Soft"/>-->
+						<!--				<Label text="Weakness" design="Bold" class="sapUiSmallMarginTop"/>-->
+						<!--				<TextArea value="{tlCard>/toProfile/Weakness}" editable="false" width="100%" growing="true" wrapping="Soft"/>-->
+						<!--			</VBox>-->
+						<!--		</ScrollContainer>-->
+						<!--	</f:content>-->
+						<!--</f:Card>-->
+					</f:items>
+				</f:GridContainer>
+			</Panel>
+		</semantic:content>
+		<!--<semantic:printAction>-->
+		<!--	<semantic:PrintAction id="btnPrint" press="onPrint" tooltip="Download PDF"/>-->
+		<!--</semantic:printAction>-->
+	</semantic:FullscreenPage>
+</mvc:View>

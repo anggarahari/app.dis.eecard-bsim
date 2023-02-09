@@ -1,0 +1,156 @@
+{
+	"_version": "1.7.0",
+	"sap.app": {
+		"id": "smm.hcmapp.dis.eecard3",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"applicationVersion": {
+			"version": "1.0.1"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"sourceTemplate": {
+			"id": "servicecatalog.connectivityComponent",
+			"version": "0.0.0"
+		},
+		"dataSources": {
+			"ZHCM_TLPROF_MAN_SRV": {
+				"uri": "/sap/opu/odata/sap/ZHCM_TLPROF_MAN_SRV/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/ZHCM_TLPROF_MAN_SRV/metadata.xml"
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		},
+		"supportedThemes": [
+			"sap_hcb",
+			"sap_belize"
+		]
+	},
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "smm.hcmapp.dis.eecard3.view.App",
+			"type": "XML"
+		},
+		"dependencies": {
+			"minUI5Version": "1.71.2",
+			"libs": {
+				"sap.collaboration": {},
+				"sap.m": {},
+				"sap.ui.comp": {},
+				"sap.ui.core": {},
+				"sap.ui.layout": {},
+				"sap.ushell": {},
+				"sap.uxap": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "smm.hcmapp.dis.eecard3.i18n.i18n"
+				}
+			},
+			"": {
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Server",
+					"defaultBindingMode": "OneTime",
+					"defaultCountMode": "Request"
+				},
+				"dataSource": "ZHCM_TLPROF_MAN_SRV",
+				"preload": true
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			],
+			"js": [
+				{
+					"uri": "libs/png.js"
+				},
+				{
+					"uri": "libs/zlib.js"
+				},
+				{
+					"uri": "libs/rgbcolor.js"
+				},
+				{
+					"uri": "libs/stackblur.js"
+				},
+				{
+					"uri": "libs/canvg.js"
+				},
+				{
+					"uri": "libs/jspdf.debug.js"
+				},
+				{
+					"uri": "libs/html2canvas.js"
+				}
+			]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"controlAggregation": "pages",
+				"viewPath": "smm.hcmapp.dis.eecard3.view",
+				"viewType": "XML",
+				"controlId": "App",
+				"bypassed": {
+					"target": [
+						"main"
+					]
+				}
+			},
+			"targets": {
+				"main": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearAggregation": true,
+					"viewName": "Main",
+					"viewLevel": 1,
+					"viewId": "main"
+				}
+			},
+			"routes": [
+				{
+					"name": "main",
+					"pattern": "",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"main"
+					]
+				}
+			]
+		}
+	},
+	"sap.platform.abap": {
+		"uri": "/sap/bc/ui5_ui5/sap/zhcm_eecar3_dis/webapp",
+		"_version": "1.1.0"
+	}
+}
