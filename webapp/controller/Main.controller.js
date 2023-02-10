@@ -7,13 +7,13 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/viz/ui5/format/ChartFormatter",
 	"sap/viz/ui5/api/env/Format"
-], function(B, D, f, J, M, VizChartFormatter, VizFormat) {
+], function (B, D, f, J, M, VizChartFormatter, VizFormat) {
 	"use strict";
 
 	return B.extend("smm.hcmapp.dis.eecard3.controller.Main", {
 		formatter: f,
 
-		onInit: function() {
+		onInit: function () {
 			var oView = this.getView();
 			this._oComponent = this.getOwnerComponent();
 			oView.addStyleClass(this._oComponent.getContentDensityClass());
@@ -27,10 +27,10 @@ sap.ui.define([
 			});
 			this.setModel(p, "appParams");
 
-			this.loadData();
+			this._loadData();
 		},
 
-		loadData: function() {
+		_loadData: function () {
 			var sPath = "/EmployeeDetailSet",
 				oModel = new J(),
 				that = this;
@@ -40,24 +40,25 @@ sap.ui.define([
 				urlParameters: {
 					$expand: "toEmployeePicture,toPerformance,toTraining,toEducation,toDevProgram,toExperience,toAttribute,toCurrentRoles,toInsight,toQualification,toAspiration,toProfile,toValueHelpBuVisibility,toValueHelpTlMobility,toValueHelpTalentClass"
 				},
-				success: function(oData, response) {
+				success: function (oData, response) {
 					if (oData.results.length > 0) {
 						oData.results[0].toAspiration.results.splice(2, 2);
 						oModel.setData(oData.results[0]);
 						that.getView().setModel(oModel, "tlCard");
-						that.build360(oData.results[0].toPerformance);
-						that.buildCert(oData.results[0].toTraining.results);
-						// that.buildQuali(oData.results[0].toQualification.results);
+						that._build360(oData.results[0].toPerformance);
+						that._buildCert(oData.results[0].toTraining.results);
+						// that._buildQuali(oData.results[0].toQualification.results);
+						console.log(oData.results[0]);
 					}
 					that._oBusy.close();
 				},
-				error: function(oError) {
+				error: function (oError) {
 					that._oBusy.close();
 				}
 			});
 		},
 
-		build360: function(p) {
+		_build360: function (p) {
 			var formatPattern = VizChartFormatter.DefaultPattern;
 			VizFormat.numericFormatter(VizChartFormatter.getInstance());
 			this._oVizFrame360Perf.setVizProperties({
@@ -141,7 +142,7 @@ sap.ui.define([
 			this._oVizFrame360Perf.setModel(dataModel);
 		},
 
-		buildQuali: function(q) {
+		_buildQuali: function (q) {
 			var oQuaModel = new J(),
 				aQua = [];
 
@@ -198,15 +199,15 @@ sap.ui.define([
 				}
 			});
 
-			this._oVizFrame360Qua.setVizScales([{
+			this._oVizFrame360Qua.setVizScales({
 				"feed": "actualValues",
 				"max": 5,
 				"min": 5
-			}], {
+			}, {
 				replace: true
 			});
 
-			q.forEach(function(E) {
+			q.forEach(function (E) {
 				if (E.CompetencyType === "S") {
 					aQua.push(E);
 				}
@@ -217,7 +218,7 @@ sap.ui.define([
 			this._oVizFrame360Qua.setModel(oQuaModel);
 		},
 
-		buildCert: function(t) {
+		_buildCert: function (t) {
 			var oParamModel = this.getModel("appParams"),
 				sYear = oParamModel.getProperty("/Year"),
 				dMin = new Date(sYear - 2, 0, 1),
@@ -228,7 +229,7 @@ sap.ui.define([
 				oS = {},
 				oStemModel = new J();
 
-			t.forEach(function(E) {
+			t.forEach(function (E) {
 				if (E.BeginDate >= dMin) {
 					// if (E.Jenis === "CERTI") {
 					// aCert.push(E);
@@ -257,32 +258,44 @@ sap.ui.define([
 			this.setModel(oStemModel, "stem");
 		},
 
-		grouperEdu: function(oGroup) {
+		grouperEdu: function (oGroup) {
 			return {
 				key: oGroup.oModel.oData.toEducation.results[oGroup.sPath.split("/")[3]].CategoryText
 			};
 		},
 
-		grouperExp: function(oGroup) {
+		grouperExp: function (oGroup) {
 			return {
 				key: oGroup.oModel.oData.toExperience.results[oGroup.sPath.split("/")[3]].GroupText
 			};
 		},
 
-		grouperAtt: function(oGroup) {
+		grouperAtt: function (oGroup) {
 			return {
 				key: oGroup.oModel.oData.toAttribute.results[oGroup.sPath.split("/")[3]].CategoryText
 			};
 		},
 
-		getGroupHeader: function(oGroup) {
+		getGroupHeader: function (oGroup) {
 			return new sap.m.GroupHeaderListItem({
 				title: oGroup.key,
 				upperCase: false
 			});
 		},
 
-		onPdfExport: function(oEvent) {
+		onPdfPrint: function (oEvent) {
+			var oData = this.getModel("tlCard").getProperty("/"),
+				oDateF = sap.ui.core.format.DateFormat.getDateInstance({
+					pattern: "yyyy-MM-ddTHH:mm:ss"
+				}),
+				sUrl = "/sap/opu/odata/sap/ZHCM_TLPROF_MAN_SRV/PdfFormSet(EmployeeNumber='" + oData.EmployeeNumber + "',EndDate=datetime'" +
+					jQuery.sap.encodeURL(oDateF.format(oData.toProfile.ValidTo)) + "',BeginDate=datetime'" +
+					jQuery.sap.encodeURL(oDateF.format(oData.toProfile.ValidFrom)) + "')/$value";
+
+			sap.m.URLHelper.redirect(sUrl, true);
+		},
+
+		onPdfExport: function (oEvent) {
 			this._oBusy.open();
 			var that = this,
 				oC = this.getModel("tlCard"),
@@ -305,15 +318,15 @@ sap.ui.define([
 			canvg(oCanvasHTML360, sSVG360);
 			var sViz360 = oCanvasHTML360.toDataURL("image/png");
 
-			var getImageFromUrl = function(url, callback) {
+			var getImageFromUrl = function (url, callback) {
 				var img = new Image();
-				img.onload = function() {
+				img.onload = function () {
 					callback(img);
 				};
 				img.src = url;
 			};
 
-			var createPDF = function(imgEmpPic) {
+			var createPDF = function (imgEmpPic) {
 				try {
 					var oDoc = new jsPDF("landscape");
 				} catch (t) {
@@ -534,7 +547,7 @@ sap.ui.define([
 				oDoc.text("Education Background:", 103, iTopC);
 				oDoc.setFontStyle("normal");
 				iL = 0;
-				aCData.toEducation.results.forEach(function(E) {
+				aCData.toEducation.results.forEach(function (E) {
 					iTopC = iTopC + 5;
 					iH = iH + 5;
 					oDoc.text(f.formatEdu(E.EstablishmentText, E.StudyBranch1Text, E.StudyBranch2Text, E.EndDate), 105, iTopC);
@@ -865,7 +878,7 @@ sap.ui.define([
 				// oDoc.roundedRect(196, iTopRStart, 93, iH + 2, 2, 2, "S");
 				// oDoc.line(196, iTopRStart + 7, 289, iTopRStart + 7);
 
-				aImg.forEach(async function(E, index) {
+				aImg.forEach(async function (E, index) {
 					try {
 						var l = true,
 							canvasCreated = await html2canvas(E.Element, {
@@ -881,7 +894,7 @@ sap.ui.define([
 						}
 					}
 					if (index === (aImg.length - 1)) {
-						that.onPdfExport2(oDoc, aCData);
+						that._onPdfExport2(oDoc, aCData);
 					}
 				});
 			};
@@ -889,7 +902,7 @@ sap.ui.define([
 			getImageFromUrl(this.byId("idPersDataCard").getIconSrc(), createPDF);
 		},
 
-		onPdfExport2: function(oDoc, aCData) {
+		_onPdfExport2: function (oDoc, aCData) {
 			var that = this,
 				iTopL = 0,
 				iTopLStart = 0,
