@@ -1,5 +1,4 @@
-<mvc:View
-    controllerName="smm.hcmapp.dis.eecard3.controller.Main"
+<mvc:View controllerName="smm.hcmapp.dis.eecard3.controller.Main"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:semantic="sap.m.semantic"
@@ -10,8 +9,7 @@
     xmlns:mchart="sap.suite.ui.microchart"
     xmlns:viz="sap.viz.ui5.controls"
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
-    xmlns:viz.data="sap.viz.ui5.data"
->
+    xmlns:viz.data="sap.viz.ui5.data">
     <semantic:FullscreenPage id="fullScreenPage" showFooter="false" class="sapUiResponsiveContentPadding sapUiFioriObjectPage">
         <semantic:content>
             <Panel id="pnlCard" expanded="true" headerText="Talent Card" width="auto">
@@ -42,12 +40,7 @@
                                 <f:GridContainerItemLayoutData columns="4" rows="17" />
                             </f:layoutData>
                             <f:header>
-                                <card:Header
-                                    id="idPersDataCard"
-                                    title="{parts: [{path: 'tlCard>/EmployeeName/FormattedName'}, {path: 'tlCard>/EmployeeNumber'}], formatter:'.formatter.formatEmpName'}"
-                                    subtitle="{tlCard>/EmployeePositionLongtext}"
-                                    iconSrc="{path: 'tlCard>/toEmployeePicture/__metadata/media_src', formatter:'.formatter.formatImageURL'}"
-                                />
+                                <card:Header id="idPersDataCard" title="{parts: [{path: 'tlCard>/EmployeeName/FormattedName'}, {path: 'tlCard>/EmployeeNumber'}], formatter:'.formatter.formatEmpName'}" subtitle="{tlCard>/EmployeePositionLongtext}" iconSrc="{path: 'tlCard>/toEmployeePicture/__metadata/media_src', formatter:'.formatter.formatImageURL'}" />
                             </f:header>
                             <f:content>
                                 <ScrollContainer height="32rem" vertical="true" width="100%">
@@ -55,14 +48,14 @@
                                         <form:content>
                                             <!--<core:Title text="Personal Data"/>-->
                                             <!--<ObjectStatus title="{parts: [{path: 'appParams>/Year'}, {value: false}], formatter:'.formatter.formatClass'}"-->
-                                            <!--	text="{tlCard>/toProfile/TalentClassOriText}" inverted="true"-->
-                                            <!--	state="{path: 'tlCard>/toProfile/TalentClassOri', formatter: '.formatter.getTalentClassState'}"/>-->
+                                            <!-- text="{tlCard>/toProfile/TalentClassOriText}" inverted="true"-->
+                                            <!-- state="{path: 'tlCard>/toProfile/TalentClassOri', formatter: '.formatter.getTalentClassState'}"/>-->
                                             <!--<ObjectStatus title="{parts: [{path: 'appParams>/Year'}, {value: true}], formatter:'.formatter.formatClass'}"-->
-                                            <!--	text="{tlCard>/toProfile/TalentClassCaliText}" inverted="true"-->
-                                            <!--	state="{path: 'tlCard>/toProfile/TalentClassCali', formatter: '.formatter.getTalentClassState'}"/>-->
+                                            <!-- text="{tlCard>/toProfile/TalentClassCaliText}" inverted="true"-->
+                                            <!-- state="{path: 'tlCard>/toProfile/TalentClassCali', formatter: '.formatter.getTalentClassState'}"/>-->
                                             <Label text="Age" />
                                             <Text text="{path: 'tlCard>/Age', formatter:'.formatter.formatAge'}" />
-                                            <Label text="Years of Service in SMM" />
+                                            <Label text="Years of Service in Group" />
                                             <Text text="{parts: [{path: 'tlCard>/Yos'}, {path: 'tlCard>/HireDate'}], formatter:'.formatter.formatYos'}" />
                                             <Label text="Years of Service in Current Position" />
                                             <Text text="{parts: [{path: 'tlCard>/YosPosition'}, {path: 'tlCard>/PositionDate'}], formatter:'.formatter.formatYosPos'}" />
@@ -102,14 +95,7 @@
                                 <VBox>
                                     <ScrollContainer height="8rem" vertical="true" width="100%">
                                         <FlexBox id="mchartStemBox" width="100%" renderType="Bare" justifyContent="Center">
-                                            <mchart:ComparisonMicroChart
-                                                id="mchartStem"
-                                                size="M"
-                                                class="sapUiRFLContainer sapUiSmallMargin"
-                                                shrinkable="true"
-                                                data="{ path: 'stem>/data', templateShareable: true }"
-                                                colorPalette="sapUiChartPaletteQualitativeHue1, sapUiChartPaletteQualitativeHue2, sapUiChartPaletteQualitativeHue3, sapUiChartPaletteQualitativeHue4, sapUiChartPaletteQualitativeHue5, sapUiChartPaletteQualitativeHue6"
-                                            >
+                                            <mchart:ComparisonMicroChart id="mchartStem" size="M" class="sapUiRFLContainer sapUiSmallMargin" shrinkable="true" data="{ path: 'stem>/data', templateShareable: true }" colorPalette="sapUiChartPaletteQualitativeHue1, sapUiChartPaletteQualitativeHue2, sapUiChartPaletteQualitativeHue3, sapUiChartPaletteQualitativeHue4, sapUiChartPaletteQualitativeHue5, sapUiChartPaletteQualitativeHue6">
                                                 <mchart:data>
                                                     <mchart:ComparisonMicroChartData title="{stem>StemText}" value="{stem>Count}" />
                                                 </mchart:data>
@@ -195,27 +181,9 @@
                                 <FlexBox width="100%" renderType="Bare" justifyContent="Center" alignContent="Center" class="sapUiSmallMarginBottom sapUiMediumMarginTop" height="6rem">
                                     <mchart:ColumnMicroChart id="mchartPat" size="L" allowColumnLabels="true" height="100%" tooltip="">
                                         <mchart:columns>
-                                            <mchart:ColumnMicroChartData
-                                                value="{path: 'tlCard>/toPerformance/Value01', formatter:'.formatter.formatToNumber'}"
-                                                label="{tlCard>/toPerformance/Year01}"
-                                                color="sapUiChartPaletteQualitativeHue3"
-                                                tooltip=""
-                                                displayValue="{parts: [{path: 'tlCard>/toPerformance/Score01'}, {path: 'tlCard>/toPerformance/Rating01'}], formatter:'.formatter.formatTextWithBrackets'}"
-                                            />
-                                            <mchart:ColumnMicroChartData
-                                                value="{path: 'tlCard>/toPerformance/Value02', formatter:'.formatter.formatToNumber'}"
-                                                label="{tlCard>/toPerformance/Year02}"
-                                                color="sapUiChartPaletteQualitativeHue2"
-                                                tooltip=""
-                                                displayValue="{parts: [{path: 'tlCard>/toPerformance/Score02'}, {path: 'tlCard>/toPerformance/Rating02'}], formatter:'.formatter.formatTextWithBrackets'}"
-                                            />
-                                            <mchart:ColumnMicroChartData
-                                                value="{path: 'tlCard>/toPerformance/Value03', formatter:'.formatter.formatToNumber'}"
-                                                label="{tlCard>/toPerformance/Year03}"
-                                                color="sapUiChartPaletteQualitativeHue1"
-                                                tooltip=""
-                                                displayValue="{parts: [{path: 'tlCard>/toPerformance/Score03'}, {path: 'tlCard>/toPerformance/Rating03'}], formatter:'.formatter.formatTextWithBrackets'}"
-                                            />
+                                            <mchart:ColumnMicroChartData value="{path: 'tlCard>/toPerformance/Value01', formatter:'.formatter.formatToNumber'}" label="{tlCard>/toPerformance/Year01}" color="sapUiChartPaletteQualitativeHue3" tooltip="" displayValue="{parts: [{path: 'tlCard>/toPerformance/Score01'}, {path: 'tlCard>/toPerformance/Rating01'}], formatter:'.formatter.formatTextWithBrackets'}" />
+                                            <mchart:ColumnMicroChartData value="{path: 'tlCard>/toPerformance/Value02', formatter:'.formatter.formatToNumber'}" label="{tlCard>/toPerformance/Year02}" color="sapUiChartPaletteQualitativeHue2" tooltip="" displayValue="{parts: [{path: 'tlCard>/toPerformance/Score02'}, {path: 'tlCard>/toPerformance/Rating02'}], formatter:'.formatter.formatTextWithBrackets'}" />
+                                            <mchart:ColumnMicroChartData value="{path: 'tlCard>/toPerformance/Value03', formatter:'.formatter.formatToNumber'}" label="{tlCard>/toPerformance/Year03}" color="sapUiChartPaletteQualitativeHue1" tooltip="" displayValue="{parts: [{path: 'tlCard>/toPerformance/Score03'}, {path: 'tlCard>/toPerformance/Rating03'}], formatter:'.formatter.formatTextWithBrackets'}" />
                                         </mchart:columns>
                                     </mchart:ColumnMicroChart>
                                 </FlexBox>

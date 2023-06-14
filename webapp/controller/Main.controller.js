@@ -382,7 +382,7 @@ sap.ui.define([
 				oDoc.text("Years of Service:", 9, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
-				oDoc.text("- SMM: " + f.formatYos(aCData.Yos, aCData.HireDate), 10, iTopL);
+				oDoc.text("- Group: " + f.formatYos(aCData.Yos, aCData.HireDate), 10, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
 				oDoc.text("- Current Position: " + f.formatYosPos(aCData.YosPosition, aCData.PositionDate), 10, iTopL);
@@ -629,7 +629,7 @@ sap.ui.define([
 				iTopR = iTopR + 7;
 				iH = iH + 5;
 				oDoc.setFontStyle("bold");
-				oDoc.text("Within SMM", 197, iTopR);
+				oDoc.text("Within Group", 197, iTopR);
 				oDoc.setFontStyle("normal");
 				iL = 0;
 				iTopR = iTopR + 5;
@@ -670,7 +670,7 @@ sap.ui.define([
 				// iTopR = iTopR + 5;
 				iH = iH + 5;
 				oDoc.setFontStyle("bold");
-				oDoc.text("Outside SMM", 197, iTopR);
+				oDoc.text("Outside Group", 197, iTopR);
 				oDoc.setFontStyle("normal");
 				iL = 0;
 				iTopR = iTopR + 5;

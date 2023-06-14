@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: "2.5"
+specVersion: "2.6"
 metadata:
   name: smm.hcmapp.dis.eecard3
 type: application
@@ -16,8 +16,12 @@ builder:
         target:
           url: https://sapwdp.sinarmasmining.com:8002/
           client: "100"
+          auth: basic
+        credentials:
+          username: env:FED_100_USERNAME
+          password: env:FED_100_PASSWORD
         app:
           name: ZHCM_EECAR3_DIS
           description: My Employee Card 3.0
           package: ZABAP
-          transport: FEDK901124
+          transport: FEDK901257
