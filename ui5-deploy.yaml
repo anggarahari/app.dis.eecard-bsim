@@ -22,6 +22,6 @@ builder:
           password: env:FED_100_PASSWORD
         app:
           name: ZHCM_EECAR3_DIS
-          description: My Employee Card 3.0
+          description: My Employee Card
           package: ZABAP
-          transport: FEDK901257
+          transport: FEDK901535

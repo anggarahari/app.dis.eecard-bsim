@@ -1,6 +1,6 @@
 {
   "name": "smm.hcmapp.dis.eecard3",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "private": true,
   "sapuxLayer": "CUSTOMER_BASE",
   "description": "",
@@ -11,7 +11,7 @@
   ],
   "main": "webapp/index.html",
   "devDependencies": {
-    "@sap/ux-ui5-tooling": "^1.10.0",
+    "@sap/ux-ui5-tooling": "^1.15.1",
     "@ui5/cli": "^3.2.0",
     "rimraf": "^5.0.1",
     "ui5-task-flatten-library": "^0.3.1"
@@ -31,6 +31,10 @@
   "ui5": {
     "dependencies": [
       "ui5-task-flatten-library"
-    ]
+    ],
+    "ui5linter": {
+      "idNamingPattern": "",
+      "eventNamingPattern": ""
+    }
   }
 }
