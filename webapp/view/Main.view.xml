@@ -12,7 +12,7 @@
     xmlns:viz.data="sap.viz.ui5.data">
     <semantic:FullscreenPage id="fullScreenPage" showFooter="false" class="sapUiResponsiveContentPadding sapUiFioriObjectPage">
         <semantic:content>
-            <Panel id="pnlCard" expanded="true" headerText="Talent Card" width="auto">
+            <Panel id="pnlCard" expanded="true" headerText="Talent Card" width="auto" class="sapUiResponsiveMargin">
                 <headerToolbar>
                     <OverflowToolbar height="3rem">
                         <Title text="Employee Card" />
@@ -21,7 +21,7 @@
                         <Button icon="sap-icon://pdf-reader" press="onPdfPrint" text="Printable PDF" tooltip="Download Printable PDF Version" />
                     </OverflowToolbar>
                 </headerToolbar>
-                <f:GridContainer id="grid1" class="sapUiSmallMargin" snapToRow="true" width="100%">
+                <f:GridContainer id="grid1" snapToRow="true" allowDenseFill="true" width="100%">
                     <f:layout>
                         <f:GridContainerSettings columns="12" rowSize="1.3rem" columnSize="5rem" gap="1rem" />
                     </f:layout>
@@ -229,7 +229,10 @@
                                     <VBox width="97%" renderType="Bare" height="100%" class="sapUiTinyMarginBeginEnd" items="{ path: 'tlCard>/toAspiration/results', templateShareable: true }">
                                         <VBox>
                                             <Label text="{tlCard>Question}" design="Bold" class="sapUiSmallMarginTop" wrapping="true" />
-                                            <TextArea value="{tlCard>Answer}" cols="50" editable="false" width="100%" growing="true" />
+                                            <TextArea value="{tlCard>Answer}" cols="50" editable="false" width="100%" growing="true" visible="{= !${tlCard>IsCheckbox}}" />
+                                            <CheckBox text="{tlCard>Answer01}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiNoMarginBottom"/>
+                                            <CheckBox text="{tlCard>Answer02}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiNoMarginTop sapUiNoMarginBottom"/>
+                                            <CheckBox text="{tlCard>Answer03}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiNoMarginTop"/>
                                         </VBox>
                                     </VBox>
                                 </ScrollContainer>

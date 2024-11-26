@@ -1,61 +1,52 @@
 /* global canvg, jsPDF, html2canvas */
+jQuery.sap.require("sap.m.BusyDialog");
+jQuery.sap.require("sap.m.MessageBox");
 sap.ui.define([
 	"smm/hcmapp/dis/eecard3/controller/BaseController",
-	"sap/m/BusyDialog",
 	"smm/hcmapp/dis/eecard3/utils/formatter",
 	"sap/ui/model/json/JSONModel",
-	"sap/m/MessageBox",
 	"sap/viz/ui5/format/ChartFormatter",
 	"sap/viz/ui5/api/env/Format"
-], function (B, D, f, J, M, VizChartFormatter, VizFormat) {
+], function (Controller, f, J, VizChartFormatter, VizFormat) {
 	"use strict";
 
-	return B.extend("smm.hcmapp.dis.eecard3.controller.Main", {
+	return Controller.extend("smm.hcmapp.dis.eecard3.controller.Main", {
 		formatter: f,
 
 		onInit: function () {
-			var oView = this.getView();
 			this._oComponent = this.getOwnerComponent();
-			oView.addStyleClass(this._oComponent.getContentDensityClass());
-			this._oBusy = new D();
+			this._oView = this.getView();
+			this._oView.addStyleClass(this._oComponent.getContentDensityClass());
+			this._oBusy = new sap.m.BusyDialog();
 			this._oODataModel = this._oComponent.getModel();
-			this._oVizFrame360Perf = this.getView().byId("idVizFrame360");
-			this._oVizFrame360Qua = this.getView().byId("idVizFrameQua");
-
-			var p = new J({
+			this._oVizFrame360Perf = this._oView.byId("idVizFrame360");
+			this._oVizFrame360Qua = this._oView.byId("idVizFrameQua");
+			this.setModel(new J({
 				Year: new Date().getFullYear()
-			});
-			this.setModel(p, "appParams");
-
+			}), "appParams");
 			this._loadData();
 		},
 
 		_loadData: function () {
-			var sPath = "/EmployeeDetailSet",
-				oModel = new J(),
-				that = this;
+			let sPath = "/EmployeeDetailSet",
+				sXp = "toEmployeePicture,toPerformance,toTraining,toEducation,toDevProgram,toExperience,toAttribute,toCurrentRoles,toInsight,toQualification,toAspiration,toProfile,toAgility,toAspCategory,toValueHelpBuVisibility,toValueHelpTlMobility,toValueHelpTalentClass",
+				oModel = new J();
 			this._oBusy.open();
-			this._oODataModel.read(sPath, {
-				async: false,
-				urlParameters: {
-					$expand: "toEmployeePicture,toPerformance,toTraining,toEducation,toDevProgram,toExperience,toAttribute,toCurrentRoles,toInsight,toQualification,toAspiration,toProfile,toValueHelpBuVisibility,toValueHelpTlMobility,toValueHelpTalentClass"
-				},
-				success: function (oData, response) {
-					if (oData.results.length > 0) {
-						oData.results[0].toAspiration.results.splice(2, 2);
-						oModel.setData(oData.results[0]);
-						that.getView().setModel(oModel, "tlCard");
-						that._build360(oData.results[0].toPerformance);
-						that._buildCert(oData.results[0].toTraining.results);
-						// that._buildQuali(oData.results[0].toQualification.results);
-						console.log(oData.results[0]);
+			this.readEntity(sPath, sXp).then(
+				(result) => {
+					if (result.results.length > 0) {
+						result.results[0].toAspiration.results.splice(2, 2);
+						oModel.setData(result.results[0]);
+						this._oView.setModel(oModel, "tlCard");
+						this._build360(result.results[0].toPerformance);
+						this._buildCert(result.results[0].toTraining.results);
 					}
-					that._oBusy.close();
+					this._oBusy.close();
 				},
-				error: function (oError) {
-					that._oBusy.close();
+				(error) => {
+					this._oBusy.close();
 				}
-			});
+			);
 		},
 
 		_build360: function (p) {
@@ -76,12 +67,6 @@ sap.ui.define([
 					},
 					drawingEffect: "glossy",
 					polarAxis: {
-						// label: {
-						// 	formatString: formatPattern.SHORTFLOAT_MFD2
-						// },
-						// labelRenderer: function(e) {
-						// 	console.log("test");
-						// },
 						title: {
 							visible: false
 						}
@@ -290,7 +275,7 @@ sap.ui.define([
 				}),
 				sUrl = "/sap/opu/odata/sap/ZHCM_TLPROF_MAN_SRV/PdfFormSet(EmployeeNumber='" + oData.EmployeeNumber + "',EndDate=datetime'" +
 					jQuery.sap.encodeURL(oDateF.format(oData.toProfile.ValidTo)) + "',BeginDate=datetime'" +
-					jQuery.sap.encodeURL(oDateF.format(oData.toProfile.ValidFrom)) + "')/$value";
+					jQuery.sap.encodeURL(oDateF.format(oData.toProfile.ValidFrom)) + "',TemplateId='1')/$value";
 
 			sap.m.URLHelper.redirect(sUrl, true);
 		},
@@ -309,7 +294,7 @@ sap.ui.define([
 				aTData = oT.getProperty("/data"),
 				aSData = oS.getProperty("/data"),
 
-				oVizFrame360 = this.getView().byId("idVizFrame360"),
+				oVizFrame360 = this._oView.byId("idVizFrame360"),
 				sSVG360 = oVizFrame360.exportToSVGString({
 					width: 1392,
 					height: 912
@@ -320,10 +305,37 @@ sap.ui.define([
 
 			var getImageFromUrl = function (url, callback) {
 				var img = new Image();
+				img.crossOrigin = 'Anonymous';
 				img.onload = function () {
-					callback(img);
+					// callback(img);
+					var canvas = document.createElement('CANVAS');
+					// Create a 2d context
+					var ctx = canvas.getContext('2d');
+					var dataURL;
+					// Resize the canavas to the original image dimensions
+					canvas.height = this.naturalHeight;
+					canvas.width = this.naturalWidth;
+					// Draw the image to a canvas
+					ctx.drawImage(this, 0, 0);
+					// Convert the canvas to a data url
+					dataURL = canvas.toDataURL();
+					// Return the data url via callback
+					callback(dataURL);
+					// Mark the canvas to be ready for garbage 
+					// collection
+					canvas = null;
+				};
+				img.onerror = function () {
+					callback(null);
 				};
 				img.src = url;
+				// make sure the load event fires for cached images too
+				if (img.complete || img.complete === undefined) {
+					// Flush cache
+					img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+					// Try again
+					img.src = src;
+				}
 			};
 
 			var createPDF = function (imgEmpPic) {
@@ -331,8 +343,8 @@ sap.ui.define([
 					var oDoc = new jsPDF("landscape");
 				} catch (t) {
 					that._oBusy.close();
-					M.show("Error loading PDF library, please try again later..", {
-						icon: M.Icon.ERROR,
+					sap.m.MessageBox.show("Error loading PDF library, please try again later..", {
+						icon: sap.m.MessageBox.Icon.ERROR,
 						title: "Oops!"
 					});
 					return;
@@ -355,7 +367,9 @@ sap.ui.define([
 				/***************Personal Data***************/
 				oDoc.setFont("helvetica");
 				// oDoc.setFillColor(242, 242, 242);
-				oDoc.addImage(imgEmpPic, "JPEG", 9, 6, 15, 15, "monkey"); // Cache the image using the alias 'monkey'
+				if (imgEmpPic !== null) {
+					oDoc.addImage(imgEmpPic, "JPEG", 9, 6, 15, 15, "monkey"); // Cache the image using the alias 'monkey'
+				}
 				oDoc.setFontSize(11);
 				iTopL = 10;
 				iH = 5;
@@ -484,7 +498,8 @@ sap.ui.define([
 						iChartHeight = 6 * iL;
 					}
 					oImg = {
-						Element: document.getElementById("application-HCMFioriApps-displayEmployeeCard-component---main--mchartStem"),
+						// Element: document.getElementById("application-HCMFioriApps-displayEmployeeCard-component---main--mchartStem"),
+						Element: document.getElementById(that.byId("mchartStem").getId()),
 						xAxis: 127,
 						yAxis: 14,
 						Width: 42,
@@ -577,7 +592,8 @@ sap.ui.define([
 				oDoc.setFontStyle("normal");
 				oDoc.setFontSize(9);
 				oImg = {
-					Element: document.getElementById("application-HCMFioriApps-displayEmployeeCard-component---main--mchartPat"),
+					// Element: document.getElementById("application-HCMFioriApps-displayEmployeeCard-component---main--mchartPat"),
+					Element: document.getElementById(that.byId("mchartPat").getId()),
 					xAxis: 124,
 					yAxis: iTopCStart + 9,
 					Width: 48,
@@ -919,7 +935,7 @@ sap.ui.define([
 				aImg = [],
 				oImg = {};
 
-			// 	oVizFrameQua = this.getView().byId("idVizFrameQua"),
+			// 	oVizFrameQua = this._oView.byId("idVizFrameQua"),
 			// 	sSVGQua = oVizFrameQua.exportToSVGString({
 			// 		width: 1968,
 			// 		height: 912
@@ -969,10 +985,16 @@ sap.ui.define([
 				iTopL = iTopL + (4 * aText.length);
 				iH = iH + (4 * aText.length);
 				oDoc.text("A:", 9, iTopL);
-				aText = oDoc.splitTextToSize(aData[i].Answer, 276);
-				oDoc.text(aText, 14, iTopL);
-				iTopL = iTopL + (4 * aText.length);
-				iH = iH + (4 * aText.length);
+				if (!aData[i].IsCheckbox) {
+					aText = oDoc.splitTextToSize(aData[i].Answer, 276);
+					oDoc.text(aText, 14, iTopL);
+					iTopL = iTopL + (4 * aText.length);
+					iH = iH + (4 * aText.length);
+				} else {
+					oDoc.text(aData[i].Answer01 + ", " + aData[i].Answer02 + ", " + aData[i].Answer03, 14, iTopL);
+					iTopL = iTopL + 4;
+					iH = iH + 4;
+				}
 				iTopL = iTopL + 1;
 				iH = iH + 1;
 			}
