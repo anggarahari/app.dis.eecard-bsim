@@ -136,15 +136,53 @@
                                 </ScrollContainer>
                             </f:content>
                         </f:Card>
+                        <f:Card id="cardAttributeDetail" class="sapUiSmallMargin" visible="{appParams>/isNewAttr}">
+                            <f:layoutData>
+                                <f:GridContainerItemLayoutData columns="4" rows="13"/>
+                            </f:layoutData>
+                            <f:header>
+                                <card:Header title="Agility Result"/>
+                            </f:header>
+                            <f:content>
+                                <VBox renderType="Bare" class="sapUiTinyMarginBegin">
+                                    <FlexBox renderType="Bare">
+                                        <List items="{ path: 'agility>/data', templateShareable: true }">
+                                            <CustomListItem >
+                                                <HBox alignItems="Center" justifyContent="SpaceBetween" width="21rem">
+                                                    <VBox width="9rem">
+                                                        <Label text="{agility>Aspect}" design="Bold" textAlign="Center" class="sapUiTinyMarginBeginEnd"/>
+                                                        <Label text="{agility>Score}" design="Bold" textAlign="Center" class="sapUiTinyMarginBeginEnd"/>
+                                                    </VBox>
+                                                    <mchart:ComparisonMicroChart width="12rem" maxValue="5" minValue="0" class="sapUiNoMarginTop sapUiNoMarginBottom">
+                                                        <mchart:data>
+                                                            <mchart:ComparisonMicroChartData title="Employee" value="{path: 'agility>SelfScore', formatter:'.formatter.formatRatingIndicator'}" color="{path: 'agility>SelfScore', formatter:'.formatter.getAttrBarColor'}" />
+                                                            <mchart:ComparisonMicroChartData title="Manager" value="{path: 'agility>ManagerScore', formatter:'.formatter.formatRatingIndicator'}" color="{path: 'agility>ManagerScore', formatter:'.formatter.getAttrBarColor'}" />
+                                                        </mchart:data>
+                                                    </mchart:ComparisonMicroChart>
+                                                </HBox>
+                                            </CustomListItem>
+                                        </List>
+                                    </FlexBox>
+                                    <HBox class="sapUiMediumMarginBegin sapUiTinyMarginTop">
+                                        <core:Icon size="0.8rem" src="sap-icon://circle-task-2" color="Negative" class="sapUiMediumMarginBegin" />
+                                        <Text text="Depth" class="sapUiTinyMarginBegin" />
+                                        <core:Icon size="0.8rem" src="sap-icon://circle-task-2" color="Critical" class="sapUiMediumMarginBegin"/>
+                                        <Text text="Balance" class="sapUiTinyMarginBegin" />
+                                        <core:Icon size="0.8rem" src="sap-icon://circle-task-2" color="Positive" class="sapUiMediumMarginBegin"/>
+                                        <Text text="Breadth" class="sapUiTinyMarginBegin" />
+                                    </HBox>
+                                </VBox>
+                            </f:content>
+                        </f:Card>
                         <f:Card class="sapUiSmallMargin">
                             <f:layoutData>
-                                <f:GridContainerItemLayoutData columns="4" rows="8" />
+                                <f:GridContainerItemLayoutData columns="4" rows="11" />
                             </f:layoutData>
                             <f:header>
                                 <card:Header title="Current Roles" />
                             </f:header>
                             <f:content>
-                                <ScrollContainer height="15rem" vertical="true" width="100%">
+                                <ScrollContainer height="22rem" vertical="true" width="100%">
                                     <FlexBox width="100%" renderType="Bare">
                                         <List growing="true" growingThreshold="2" items="{ path: 'tlCard>/toCurrentRoles/results', templateShareable: true }">
                                             <StandardListItem title="{tlCard>KpiName}" description="{tlCard>KpiDesc}" />
@@ -172,13 +210,13 @@
                         </f:Card>
                         <f:Card class="sapUiSmallMargin">
                             <f:layoutData>
-                                <f:GridContainerItemLayoutData columns="4" rows="6" />
+                                <f:GridContainerItemLayoutData columns="4" rows="5" />
                             </f:layoutData>
                             <f:header>
                                 <card:Header title="PAT Record" />
                             </f:header>
                             <f:content>
-                                <FlexBox width="100%" renderType="Bare" justifyContent="Center" alignContent="Center" class="sapUiSmallMarginBottom sapUiMediumMarginTop" height="6rem">
+                                <FlexBox width="100%" renderType="Bare" justifyContent="Center" alignContent="Center" class="sapUiSmallMarginBottom sapUiSmallMarginTop" height="6rem">
                                     <mchart:ColumnMicroChart id="mchartPat" size="L" allowColumnLabels="true" height="100%" tooltip="">
                                         <mchart:columns>
                                             <mchart:ColumnMicroChartData value="{path: 'tlCard>/toPerformance/Value01', formatter:'.formatter.formatToNumber'}" label="{tlCard>/toPerformance/Year01}" color="sapUiChartPaletteQualitativeHue3" tooltip="" displayValue="{parts: [{path: 'tlCard>/toPerformance/Score01'}, {path: 'tlCard>/toPerformance/Rating01'}], formatter:'.formatter.formatTextWithBrackets'}" />
@@ -189,9 +227,79 @@
                                 </FlexBox>
                             </f:content>
                         </f:Card>
+                        <f:Card id="cardAttributeNew" class="sapUiSmallMargin" visible="{appParams>/isNewAttr}">
+                            <f:layoutData>
+                                <f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 5 }" rows="13"/>
+                            </f:layoutData>
+                            <f:header>
+                                <card:Header title="Agility Result"/>
+                            </f:header>
+                            <f:content>
+                                <VBox width="100%" renderType="Bare" justifyContent="Center" alignContent="Center" class="sapUiSmallMarginTop">
+                                    <FlexBox renderType="Bare" justifyContent="Center">
+                                        <List >
+                                            <StandardListItem title="{parts: [{path: 'i18n>learningAgility'}, {path: 'tlCard>/toAgility/LearningAgilityScore'}], formatter:'.formatter.formatTextWithBrackets'}" info="{tlCard>/toAgility/LearningAgility}" infoState="{tlCard>/toAgility/LearningAgilityState}"/>
+                                        </List>
+                                    </FlexBox>
+                                    <FlexBox width="100%" renderType="Bare" justifyContent="Center" alignContent="Center">
+                                        <viz:VizFrame id="idVizFrameAgility" uiConfig="{applicationSet:'fiori'}" vizType="radar" height="19rem" width="100%">
+                                            <viz:dataset>
+                                                <viz.data:FlattenedDataset data="{/agility}">
+                                                    <viz.data:dimensions>
+                                                        <viz.data:DimensionDefinition name="Feedback" value="{Aspect}"/>
+                                                    </viz.data:dimensions>
+                                                    <viz.data:measures>
+                                                        <viz.data:MeasureDefinition name="Consolidation Result" value="{Score}"/>
+                                                        <viz.data:MeasureDefinition name="Employee Result" value="{SelfScore}"/>
+                                                        <viz.data:MeasureDefinition name="Manager Result" value="{ManagerScore}"/>
+                                                    </viz.data:measures>
+                                                </viz.data:FlattenedDataset>
+                                            </viz:dataset>
+                                            <viz:feeds>
+                                                <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Consolidation Result,Employee Result,Manager Result"/>
+                                                <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Feedback"/>
+                                            </viz:feeds>
+                                        </viz:VizFrame>
+                                    </FlexBox>
+                                </VBox>
+                            </f:content>
+                        </f:Card>
+                        <f:Card class="sapUiSmallMargin" visible="{appParams>/isNewAttr}">
+                            <f:layoutData>
+                                <f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 7 }" rows="13"/>
+                            </f:layoutData>
+                            <f:header>
+                                <card:Header title="Employee Aspiration Heat Map"/>
+                            </f:header>
+                            <f:content>
+                                <ScrollContainer height="24rem" vertical="true" width="100%">
+                                    <FlexBox width="100%" renderType="Bare">
+                                        <List items="{ path: 'tlCard>/toAspCategory/results', templateShareable: true }">
+                                            <CustomListItem>
+                                                <HBox alignItems="Center" justifyContent="SpaceBetween" width="95%">
+                                                    <HBox >
+                                                        <Text text="{tlCard>SequenceNumber}" textAlign="End" width="2rem"/>
+                                                        <Text text="{tlCard>Category}" class="sapUiTinyMarginBegin"/>
+                                                    </HBox>
+                                                    <core:Icon size="2rem" src="sap-icon://circle-task-2" color="{path: 'tlCard>Counter', formatter:'.formatter.getHeatMapColor'}"/>
+                                                </HBox>
+                                            </CustomListItem>
+                                        </List>
+                                    </FlexBox>
+                                    <HBox class="sapUiLargeMarginBegin sapUiTinyMarginTop">
+                                        <core:Icon size="0.8rem" src="sap-icon://circle-task-2" color="#FF0101" class="sapUiMediumMarginBegin" />
+                                        <Text text="Selected three or more times" class="sapUiTinyMarginBegin" />
+                                        <core:Icon size="0.8rem" src="sap-icon://circle-task-2" color="#FFC000" class="sapUiMediumMarginBegin"/>
+                                        <Text text="Selected twice" class="sapUiTinyMarginBegin" />
+                                        <core:Icon size="0.8rem" src="sap-icon://circle-task-2" color="#91D050" class="sapUiMediumMarginBegin"/>
+                                        <Text text="Selected once" class="sapUiTinyMarginBegin" />
+                                    </HBox>
+                                </ScrollContainer>
+                            </f:content>
+                        </f:Card>
                         <f:Card class="sapUiSmallMargin">
                             <f:layoutData>
-                                <f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 5 }" rows="10" />
+                                <f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 5 }" rows="13" />
                             </f:layoutData>
                             <f:header>
                                 <card:Header title="Performance - 360&#176;" />
@@ -219,22 +327,38 @@
                         </f:Card>
                         <f:Card class="sapUiSmallMargin">
                             <f:layoutData>
-                                <f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 7 }" rows="10" />
+                                <f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 7 }" rows="13" />
                             </f:layoutData>
                             <f:header>
                                 <card:Header title="Aspiration" />
                             </f:header>
                             <f:content>
-                                <ScrollContainer height="18rem" vertical="true" width="100%">
-                                    <VBox width="97%" renderType="Bare" height="100%" class="sapUiTinyMarginBeginEnd" items="{ path: 'tlCard>/toAspiration/results', templateShareable: true }">
-                                        <VBox>
-                                            <Label text="{tlCard>Question}" design="Bold" class="sapUiSmallMarginTop" wrapping="true" />
-                                            <TextArea value="{tlCard>Answer}" cols="50" editable="false" width="100%" growing="true" visible="{= !${tlCard>IsCheckbox}}" />
-                                            <CheckBox text="{tlCard>Answer01}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiNoMarginBottom"/>
-                                            <CheckBox text="{tlCard>Answer02}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiNoMarginTop sapUiNoMarginBottom"/>
-                                            <CheckBox text="{tlCard>Answer03}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiNoMarginTop"/>
+                                <ScrollContainer height="26rem" vertical="true" width="100%">
+                                    <HBox >
+                                        <!-- <VBox width="97%" renderType="Bare" height="100%" class="sapUiTinyMarginBeginEnd" items="{ path: 'tlCard>/toAspiration/results', filters : [ { path : 'SubtypeId', operator : 'EQ', value1 : 'L'} ], templateShareable: true }"> -->
+                                        <VBox width="97%" renderType="Bare" height="100%" class="sapUiTinyMarginBeginEnd" items="{ path: 'tlCard>/toAspiration/results', templateShareable: true }">
+                                            <VBox>
+                                                <Label text="{tlCard>Question}" design="Bold" class="sapUiSmallMarginTop" wrapping="true" />
+                                                <TextArea value="{tlCard>Answer}" cols="50" editable="false" width="100%" growing="true" visible="{= !${tlCard>IsCheckbox}}" />
+                                                <HBox >
+                                                    <CheckBox text="{tlCard>Answer01}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiSmallMarginEnd"/>
+                                                    <CheckBox text="{tlCard>Answer02}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiSmallMarginEnd"/>
+                                                    <CheckBox text="{tlCard>Answer03}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiSmallMarginEnd"/>
+                                                </HBox>
+                                            </VBox>
                                         </VBox>
-                                    </VBox>
+                                        <!-- <VBox width="97%" renderType="Bare" height="100%" class="sapUiTinyMarginBeginEnd" items="{ path: 'tlCard>/toAspiration/results', filters : [ { path : 'SubtypeId', operator : 'EQ', value1 : 'R'} ], templateShareable: true }">
+                                            <VBox>
+                                                <Label text="{tlCard>Question}" design="Bold" class="sapUiSmallMarginTop" wrapping="true" />
+                                                <TextArea value="{tlCard>Answer}" cols="50" editable="false" width="100%" growing="true" visible="{= !${tlCard>IsCheckbox}}" />
+                                                <HBox >
+                                                    <CheckBox text="{tlCard>Answer01}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiSmallMarginEnd"/>
+                                                    <CheckBox text="{tlCard>Answer02}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiSmallMarginEnd"/>
+                                                    <CheckBox text="{tlCard>Answer03}" selected="true" editable="false" visible="{tlCard>IsCheckbox}" class="sapUiSmallMarginEnd"/>
+                                                </HBox>
+                                            </VBox>
+                                        </VBox> -->
+                                    </HBox>
                                 </ScrollContainer>
                             </f:content>
                         </f:Card>
