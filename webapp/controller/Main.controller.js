@@ -19,27 +19,39 @@ sap.ui.define([
 			this._oView.addStyleClass(this._oComponent.getContentDensityClass());
 			this._oBusy = new sap.m.BusyDialog();
 			this._oODataModel = this._oComponent.getModel();
+			this.setModel(new J(), "agility");
+			this.setModel(new J({
+				Year: new Date().getFullYear(),
+				isNewAttr: false
+			}), "appParams");
 			this._oVizFrame360Perf = this._oView.byId("idVizFrame360");
 			this._oVizFrame360Qua = this._oView.byId("idVizFrameQua");
-			this.setModel(new J({
-				Year: new Date().getFullYear()
-			}), "appParams");
+			this._oVizFrameAgility = this._oView.byId("idVizFrameAgility");
 			this._loadData();
 		},
 
 		_loadData: function () {
 			let sPath = "/EmployeeDetailSet",
 				sXp = "toEmployeePicture,toPerformance,toTraining,toEducation,toDevProgram,toExperience,toAttribute,toCurrentRoles,toInsight,toQualification,toAspiration,toProfile,toAgility,toAspCategory,toValueHelpBuVisibility,toValueHelpTlMobility,toValueHelpTalentClass",
+				oParamModel = this.getModel("appParams"),
 				oModel = new J();
 			this._oBusy.open();
 			this.readEntity(sPath, sXp).then(
 				(result) => {
 					if (result.results.length > 0) {
 						result.results[0].toAspiration.results.splice(2, 2);
+						// result.results[0].toAspiration.results[4].SubtypeId = "L";
 						oModel.setData(result.results[0]);
 						this._oView.setModel(oModel, "tlCard");
 						this._build360(result.results[0].toPerformance);
 						this._buildCert(result.results[0].toTraining.results);
+						console.log(result.results[0].toAgility);
+						if (result.results[0].toAgility) {
+							oParamModel.setProperty("/isNewAttr", true);
+							this._buildAgility(result.results[0].toAgility);
+						} else {
+							oParamModel.setProperty("/isNewAttr", false);
+						}
 					}
 					this._oBusy.close();
 				},
@@ -243,6 +255,102 @@ sap.ui.define([
 			this.setModel(oStemModel, "stem");
 		},
 
+		_buildAgility: function (oAgility) {
+			let d = VizChartFormatter.DefaultPattern;
+			VizFormat.numericFormatter(VizChartFormatter.getInstance());
+			this._oVizFrameAgility.setVizProperties({
+				plotArea: {
+					dataLabel: {
+						formatString: d.SHORTFLOAT_MFD2,
+						visible: true
+					},
+					area: {
+						visible: true,
+						opacity: .05
+					},
+					gridline: {
+						visible: false
+					},
+					drawingEffect: "glossy",
+					polarAxis: {
+						title: {
+							visible: false
+						}
+					},
+					valueAxis: {
+						label: {
+							visible: false,
+							formatString: d.SHORTFLOAT_MFD2
+						},
+						title: {
+							visible: false
+						}
+					}
+				},
+				title: {
+					visible: false
+				},
+				// legend: {
+				// 	visible: false
+				// },
+				legendGroup: {
+					layout: {
+						alignment: "center",
+						position: "bottom"
+					}
+				},
+				general: {
+					layout: {
+						isFixedpadding: false
+					}
+				},
+				interaction: {
+					noninteractiveMode: true
+				}
+			});
+			this._oVizFrameAgility.setVizScales({
+				valueAxis: {
+					min: 5
+				}
+			});
+			let aAgility = [{
+				Aspect: "Mental Agility",
+				Score: oAgility.MentalAgility,
+				SelfScore: oAgility.MentalAgilitySelf,
+				ManagerScore: oAgility.MentalAgilityMgr
+			}, {
+				Aspect: "People Agility",
+				Score: oAgility.PeopleAgility,
+				SelfScore: oAgility.PeopleAgilitySelf,
+				ManagerScore: oAgility.PeopleAgilityMgr
+			}, {
+				Aspect: "Change Agility",
+				Score: oAgility.ChangeAgility,
+				SelfScore: oAgility.ChangeAgilitySelf,
+				ManagerScore: oAgility.ChangeAgilityMgr
+			}, {
+				Aspect: "Result Agility",
+				Score: oAgility.ResultAgility,
+				SelfScore: oAgility.ResultAgilitySelf,
+				ManagerScore: oAgility.ResultAgilityMgr
+			}],
+				oDataModel = new J({
+					agility: aAgility
+				});
+			this._oVizFrameAgility.setModel(oDataModel)
+
+			let oSelfAwareness = {
+				Aspect: "Self Awareness",
+				Score: oAgility.SelfAwareness,
+				SelfScore: oAgility.SelfAwarenessSelf,
+				ManagerScore: oAgility.SelfAwarenessMgr
+			};
+			aAgility.push(oSelfAwareness);
+			let oAgilityModel = this.getModel("agility");
+			oAgilityModel.setData({ data: aAgility });
+			console.log(aAgility);
+		},
+
 		grouperEdu: function (oGroup) {
 			return {
 				key: oGroup.oModel.oData.toEducation.results[oGroup.sPath.split("/")[3]].CategoryText
@@ -282,17 +390,18 @@ sap.ui.define([
 
 		onPdfExport: function (oEvent) {
 			this._oBusy.open();
-			var that = this,
+			let that = this,
 				oC = this.getModel("tlCard"),
 				oP = this.getModel("appParams"),
 				// oD = this.getModel("talentDetail"),
 				oT = this.getModel("training"),
 				oS = this.getModel("stem"),
 
-				aCData = oC.getProperty("/"),
+				oCardData = oC.getProperty("/"),
 				// aDData = oD.getProperty("/"),
 				aTData = oT.getProperty("/data"),
 				aSData = oS.getProperty("/data"),
+				oCard = oP.getProperty("/"),
 
 				oVizFrame360 = this._oView.byId("idVizFrame360"),
 				sSVG360 = oVizFrame360.exportToSVGString({
@@ -301,7 +410,18 @@ sap.ui.define([
 				}).replace(/translate /gm, "translate"),
 				oCanvasHTML360 = document.createElement("canvas");
 			canvg(oCanvasHTML360, sSVG360);
-			var sViz360 = oCanvasHTML360.toDataURL("image/png");
+			let sViz360 = oCanvasHTML360.toDataURL("image/png");
+
+			if (oCard.isNewAttr) {
+				let oVizFrameAgility = this.getView().byId("idVizFrameAgility"),
+					sSVGAgility = oVizFrameAgility.exportToSVGString({
+						width: 1392,
+						height: 912
+					}).replace(/translate /gm, "translate"),
+					oCanvasHTMLAgility = document.createElement("canvas");
+				canvg(oCanvasHTMLAgility, sSVGAgility);
+				var sVizAgility = oCanvasHTMLAgility.toDataURL("image/png");
+			}
 
 			var getImageFromUrl = function (url, callback) {
 				var img = new Image();
@@ -374,13 +494,13 @@ sap.ui.define([
 				iTopL = 10;
 				iH = 5;
 				oDoc.setFontStyle("bold");
-				oDoc.text(aCData.EmployeeName.FormattedName, 26, iTopL);
+				oDoc.text(oCardData.EmployeeName.FormattedName, 26, iTopL);
 				oDoc.setFontSize(9);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
 				oDoc.setFontStyle("italic");
 				oDoc.setFontStyle("bold");
-				oDoc.text(aCData.EmployeePositionLongtext, 26, iTopL);
+				oDoc.text(oCardData.EmployeePositionLongtext, 26, iTopL);
 				oDoc.setFontStyle("normal");
 				// iTopL = iTopL + 5;
 				// iH = iH + 5;
@@ -390,34 +510,34 @@ sap.ui.define([
 				// oDoc.text(f.formatClass(oP.getProperty("/Year"), true) + ": " + oD.getProperty("/TalentClassCaliText"), 9, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
-				oDoc.text("Age: " + f.formatAge(aCData.Age), 26, iTopL);
+				oDoc.text("Age: " + f.formatAge(oCardData.Age), 26, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
 				oDoc.text("Years of Service:", 9, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
-				oDoc.text("- Group: " + f.formatYos(aCData.Yos, aCData.HireDate), 10, iTopL);
+				oDoc.text("- Group: " + f.formatYos(oCardData.Yos, oCardData.HireDate), 10, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
-				oDoc.text("- Current Position: " + f.formatYosPos(aCData.YosPosition, aCData.PositionDate), 10, iTopL);
+				oDoc.text("- Current Position: " + f.formatYosPos(oCardData.YosPosition, oCardData.PositionDate), 10, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
-				oDoc.text("Job Grade / PS Level: " + f.formatPayScale(aCData.PayScaleGroup, aCData.PayScaleLevel), 9, iTopL);
+				oDoc.text("Job Grade / PS Level: " + f.formatPayScale(oCardData.PayScaleGroup, oCardData.PayScaleLevel), 9, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
-				oDoc.text("Directorate: " + aCData.DirectorateText, 9, iTopL);
+				oDoc.text("Directorate: " + oCardData.DirectorateText, 9, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
-				oDoc.text("Division: " + aCData.DivisionText, 9, iTopL);
+				oDoc.text("Division: " + oCardData.DivisionText, 9, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
-				oDoc.text("Department: " + aCData.DepartmentText, 9, iTopL);
+				oDoc.text("Department: " + oCardData.DepartmentText, 9, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
-				oDoc.text("Org. Structure: " + aCData.BusUnitText, 9, iTopL);
+				oDoc.text("Org. Structure: " + oCardData.BusUnitText, 9, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
-				oDoc.text("Group: " + aCData.BusinessAreaText, 9, iTopL);
+				oDoc.text("Group: " + oCardData.BusinessAreaText, 9, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
 				oDoc.text("Last Promotion: " + that.byId("txLastPromo").getText(), 9, iTopL);
@@ -426,7 +546,7 @@ sap.ui.define([
 				oDoc.text("Last Rotation: " + that.byId("txLastRotat").getText(), 9, iTopL);
 				iTopL = iTopL + 5;
 				iH = iH + 5;
-				oDoc.text("Position Before Current: " + aCData.BeforePositionText, 9, iTopL);
+				oDoc.text("Position Before Current: " + oCardData.BeforePositionText, 9, iTopL);
 				oDoc.roundedRect(8, 5, 93, iH + 2, 2, 2, "S");
 
 				/***************Development Program***************/
@@ -440,7 +560,7 @@ sap.ui.define([
 				oDoc.setFontStyle("normal");
 				oDoc.setFontSize(9);
 				iTopL = iTopL + 7;
-				aData = aCData.toDevProgram.results;
+				aData = oCardData.toDevProgram.results;
 				iL = 0;
 				for (i = 0; i < aData.length; i++) {
 					iL = iL + 1;
@@ -562,7 +682,7 @@ sap.ui.define([
 				oDoc.text("Education Background:", 103, iTopC);
 				oDoc.setFontStyle("normal");
 				iL = 0;
-				aCData.toEducation.results.forEach(function (E) {
+				oCardData.toEducation.results.forEach(function (E) {
 					iTopC = iTopC + 5;
 					iH = iH + 5;
 					oDoc.text(f.formatEdu(E.EstablishmentText, E.StudyBranch1Text, E.StudyBranch2Text, E.EndDate), 105, iTopC);
@@ -640,7 +760,7 @@ sap.ui.define([
 				oDoc.text("Experience", 197, iTopR);
 				oDoc.setFontStyle("normal");
 				oDoc.setFontSize(9);
-				aData = aCData.toExperience.results;
+				aData = oCardData.toExperience.results;
 
 				iTopR = iTopR + 7;
 				iH = iH + 5;
@@ -737,7 +857,7 @@ sap.ui.define([
 				oDoc.text("Current Roles", 197, iTopR);
 				oDoc.setFontStyle("normal");
 				oDoc.setFontSize(9);
-				aData = aCData.toCurrentRoles.results;
+				aData = oCardData.toCurrentRoles.results;
 				iTopR = iTopR + 7;
 				iL = 0;
 				for (i = 0; i < aData.length; i++) {
@@ -768,6 +888,35 @@ sap.ui.define([
 				oDoc.roundedRect(196, iTopRStart, 93, iH + 2, 2, 2, "S");
 				oDoc.line(196, iTopRStart + 7, 289, iTopRStart + 7);
 
+				/***************Attribute***************/
+				if (oCardData.toAgility && oCard.isNewAttr) {
+					oDoc.setFontSize(11);
+					iTopR = iTopR + 3;
+					iH = 7;
+					iTopRStart = iTopR;
+					iTopR = iTopR + 5;
+					oDoc.setFontStyle("bold");
+					if (oCard.isNewAttr) {
+						oDoc.text("Agility Result", 197, iTopR);
+					} else {
+						oDoc.text("Attribute", 197, iTopR);
+					}
+					oDoc.setFontStyle("normal");
+					oDoc.setFontSize(9);
+					iTopR = iTopR + 2;
+					oDoc.setTextColor(f.getColorHex(""));
+					oDoc.text("Learning Agility", 199, iTopR + 5);
+					oDoc.setTextColor(f.getColorHex(oCardData.toAgility.LearningAgilityState));
+					oDoc.text(oCardData.toAgility.LearningAgility, 286, iTopR + 5, "right");
+
+					oDoc.addImage(sVizAgility, "PNG", 197, iTopR, 92, 60);
+					iTopR = iTopR + 62;
+					iH = iH + 55;
+					oDoc.setTextColor(f.getColorHex(""));
+					oDoc.roundedRect(196, iTopRStart, 93, iH + 2, 2, 2, "S");
+					oDoc.line(196, iTopRStart + 7, 289, iTopRStart + 7);
+				}
+
 				// /***************Aspiration***************/
 				// oDoc.setFontSize(11);
 				// iTopR = iTopR + 2;
@@ -780,7 +929,7 @@ sap.ui.define([
 				// iTopR = iTopR + 7;
 				// // iH = iH + 1;
 				// oDoc.setFontStyle("normal");
-				// aData = aCData.toAspiration.results;
+				// aData = oCardData.toAspiration.results;
 				// iL = 0;
 				// for (i = 0; i < aData.length; i++) {
 				// 	iL = iL + 1;
@@ -818,7 +967,7 @@ sap.ui.define([
 				// oDoc.setFontStyle("normal");
 				// oDoc.setFontSize(9);
 				// iTopR = iTopR + 2;
-				// aData = aCData.toAttribute.results;
+				// aData = oCardData.toAttribute.results;
 
 				// iTopR = iTopR + 5;
 				// iH = iH + 5;
@@ -910,7 +1059,7 @@ sap.ui.define([
 						}
 					}
 					if (index === (aImg.length - 1)) {
-						that._onPdfExport2(oDoc, aCData);
+						that._onPdfExport2(oDoc, oCardData);
 					}
 				});
 			};
@@ -918,7 +1067,7 @@ sap.ui.define([
 			getImageFromUrl(this.byId("idPersDataCard").getIconSrc(), createPDF);
 		},
 
-		_onPdfExport2: function (oDoc, aCData) {
+		_onPdfExport2: function (oDoc, oCardData) {
 			var that = this,
 				iTopL = 0,
 				iTopLStart = 0,
@@ -975,7 +1124,7 @@ sap.ui.define([
 			iTopL = iTopL + 7;
 			// iH = iH + 1;
 			oDoc.setFontStyle("normal");
-			aData = aCData.toAspiration.results;
+			aData = oCardData.toAspiration.results;
 			iL = 0;
 			for (i = 0; i < aData.length; i++) {
 				iL = iL + 1;
@@ -1019,7 +1168,7 @@ sap.ui.define([
 			oDoc.text("Positive Insight", 9, iTopL);
 			oDoc.setFontStyle("normal");
 			oDoc.setFontSize(9);
-			aData = aCData.toInsight.results;
+			aData = oCardData.toInsight.results;
 			iTopL = iTopL + 7;
 			iL = 0;
 			for (var i = 0; i < aData.length; i++) {
@@ -1117,9 +1266,134 @@ sap.ui.define([
 			// oDoc.line(8, iTopLStart + 7, 148, iTopLStart + 7);
 
 			// jQuery.sap.delayedCall(2500, that, function() {
-			oDoc.save(aCData.EmployeeNumber + ".pdf");
-			that._oBusy.close();
+			// oDoc.save(oCardData.EmployeeNumber + ".pdf");
+			// that._oBusy.close();
 			// });
+			this._onPdfExport3(oDoc, oCardData);
+		},
+
+		_onPdfExport3: function (oDoc, oCardData) {
+			let iTopL = 0,
+				iTopLStart = 0,
+				iTopR = 0,
+				iTopRStart = 0,
+				iH = 0,
+				iL = 0,
+				aData = [],
+				aAgility = this.getModel("agility").getProperty("/data");
+
+			oDoc.addPage("landscape");
+
+			/***************Agility Result***************/
+			oDoc.setFontSize(11);
+			iTopL = 5;
+			iH = 7;
+			iTopLStart = iTopL;
+			iTopL = iTopL + 5;
+			oDoc.setFontStyle("bold");
+			oDoc.text("Agility Result", 9, iTopL);
+			oDoc.setFontStyle("normal");
+			oDoc.setFontSize(9);
+			aData = oCardData.toInsight.results;
+			iTopL = iTopL + 7;
+			iL = 0;
+			if (aAgility && typeof aAgility !== "undefined") {
+				for (let i = 0; i < aAgility.length; i++) {
+					iL = iL + 1;
+					oDoc.text("Employee", 40, iTopL - 1);
+					oDoc.setTextColor(f.getColorHex(f.getAttrBarColor(aAgility[i].SelfScore)));
+					oDoc.text(aAgility[i].SelfScore, 140, iTopL - 1, "right");
+					oDoc.setFillColor(214, 218, 220);
+					oDoc.rect(40, iTopL, 100, 2, "F");
+					oDoc.setFillColor(f.getColorHex(f.getAttrBarColor(aAgility[i].SelfScore)));
+					oDoc.rect(40, iTopL, parseFloat(aAgility[i].SelfScore) * 20, 2, "F");
+					// oDoc.setFillColor(f.getColorHex(f.getAttrBarColor(iL)));
+					// oDoc.rect(40, iTopL, iL * 20, 2, "F");
+					oDoc.setTextColor(f.getColorHex(""));
+					oDoc.setFontStyle("bold");
+					oDoc.text(aAgility[i].Aspect, 9, iTopL + 2);
+					iTopL = iTopL + 6;
+					oDoc.setFontStyle("normal");
+
+					oDoc.text("Manager", 40, iTopL - 1);
+					oDoc.setTextColor(f.getColorHex(f.getAttrBarColor(aAgility[i].ManagerScore)));
+					oDoc.text(aAgility[i].ManagerScore, 140, iTopL - 1, "right");
+					oDoc.setFillColor(214, 218, 220);
+					oDoc.rect(40, iTopL, 100, 2, "F");
+					oDoc.setFillColor(f.getColorHex(f.getAttrBarColor(aAgility[i].ManagerScore)));
+					oDoc.rect(40, iTopL, parseFloat(aAgility[i].ManagerScore) * 20, 2, "F");
+					oDoc.setTextColor(f.getColorHex(""));
+					oDoc.setFontStyle("bold");
+					oDoc.text(aAgility[i].Score, 9, iTopL);
+					oDoc.setFontStyle("normal");
+					iTopL = iTopL + 10;
+					iH = iH + 15;
+				}
+			}
+			if (iL === 0) {
+				iH = iH + 5;
+				iTopL = iTopL + 5;
+			} else {
+				iH = iH + 11;
+				oDoc.setFillColor(f.getColorHex("Error"));
+				oDoc.circle(40, iTopL - 1, 2, "F");
+				oDoc.text("Depth", 44, iTopL);
+				oDoc.setFillColor(f.getColorHex("Critical"));
+				oDoc.circle(70, iTopL - 1, 2, "F");
+				oDoc.text("Balance", 74, iTopL);
+				oDoc.setFillColor(f.getColorHex("Good"));
+				oDoc.circle(100, iTopL - 1, 2, "F");
+				oDoc.text("Breadth", 104, iTopL);
+			}
+
+			oDoc.setTextColor(f.getColorHex(""));
+			oDoc.roundedRect(8, iTopLStart, 140, iH + 2, 2, 2, "S");
+			oDoc.line(8, iTopLStart + 7, 148, iTopLStart + 7);
+
+			/***************Employee Aspiration Heat Map***************/
+			oDoc.setFontSize(11);
+			iTopR = 5;
+			iH = 7;
+			iTopRStart = iTopR;
+			iTopR = iTopR + 5;
+			oDoc.setFontStyle("bold");
+			oDoc.text("Employee Aspiration Heat Map", 150, iTopR);
+			oDoc.setFontStyle("normal");
+			aData = oCardData.toAspCategory.results;
+			oDoc.setFontSize(9);
+			iTopR = iTopR + 7;
+			iL = 0;
+			for (let i = 0; i < aData.length; i++) {
+				iL = iL + 1;
+				oDoc.text(aData[i].SequenceNumber, 155, iTopR, "right");
+				oDoc.text(aData[i].Category, 157, iTopR);
+				oDoc.setFillColor(f.getHeatMapColor(aData[i].Counter));
+				oDoc.circle(280, iTopR - 1, 3, "F");
+				iTopR = iTopR + 8;
+				iH = iH + 8;
+			}
+			if (iL === 0) {
+				iH = iH + 5;
+				iTopR = iTopR + 5;
+			} else {
+				iH = iH + 6;
+				oDoc.setFillColor("#FF0101");
+				oDoc.circle(160, iTopR - 1, 2, "F");
+				oDoc.text("Selected three or more times", 164, iTopR);
+				oDoc.setFillColor("#FFC000")
+				oDoc.circle(215, iTopR - 1, 2, "F");
+				oDoc.text("Selected twice", 219, iTopR);
+				oDoc.setFillColor("#91D050")
+				oDoc.circle(250, iTopR - 1, 2, "F");
+				oDoc.text("Selected once", 254, iTopR);
+			}
+
+			oDoc.setTextColor(f.getColorHex(""));
+			oDoc.roundedRect(149, iTopRStart, 140, iH + 2, 2, 2, "S");
+			oDoc.line(149, iTopRStart + 7, 289, iTopRStart + 7);
+
+			oDoc.save(oCardData.EmployeeNumber + ".pdf");
+			this._oBusy.close();
 		}
 	});
 });
