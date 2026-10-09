@@ -1,11 +1,11 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"smm/hcmapp/dis/eecard3/model/models"
+	"bsim/hcmapp/dis/eecard3/model/models"
 ], function(UIComponent, Device, models) {
 	"use strict";
 
-	return UIComponent.extend("smm.hcmapp.dis.eecard3.Component", {
+	return UIComponent.extend("bsim.hcmapp.dis.eecard3.Component", {
 
 		metadata: {
 			manifest: "json"

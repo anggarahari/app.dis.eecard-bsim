@@ -2,7 +2,7 @@
 
 specVersion: "2.6"
 metadata:
-  name: smm.hcmapp.dis.eecard3
+  name: bsim.hcmapp.dis.eecard3
 type: application
 builder:
   resources:
@@ -13,15 +13,16 @@ builder:
     - name: deploy-to-abap
       afterTask: generateCachebusterInfo
       configuration:
+        verbose: true
         target:
-          url: https://sapwdp.sinarmasmining.com:8002/
+          url: http://sap-app-dv.cd.banksinarmas.com:8011
           client: "100"
           auth: basic
         credentials:
-          username: env:FED_100_USERNAME
-          password: env:FED_100_PASSWORD
+          username: env:S4D_USERNAME
+          password: env:S4D_PASSWORD
         app:
-          name: ZHCM_EECAR3_DIS
+          name: ZHR_EECAR3_DIS
           description: My Employee Card
-          package: ZABAP
-          transport: FEDK901575
+          package: ZHR01
+          transport: S4DK900933

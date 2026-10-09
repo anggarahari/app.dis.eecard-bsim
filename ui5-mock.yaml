@@ -1,24 +1,25 @@
-# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
 specVersion: "2.5"
 metadata:
-  name: smm.hcmapp.man.dis.eecard3
+  name: bsim.hcmapp.man.dis.eecard3
 type: application
 server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertError: false
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
         backend:
+          - path: /sap/opu/odata/sap/ZHR_TLPROF_MAN_SRV
+            url: http://sap-app-dv.cd.banksinarmas.com:8011
+            client: "110"
           - path: /sap
-            url: https://sapwdp.sinarmasmining.com:8002/
-            client: "100"
+            url: http://sap-app-dv.cd.banksinarmas.com:8011
+            client: "110"
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -29,7 +30,12 @@ server:
       beforeMiddleware: csp
       configuration:
         service:
-          urlPath: /sap/opu/odata/sap/ZHCM_TLPROF_MAN_SRV
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+          - urlPath: /sap/opu/odata/sap/ZHCM_TLPROF_MAN_SRV
+            metadataXmlPath: ./webapp/localService/ZHCM_TLPROF_MAN_SRV/metadata.xml
+            mockdataRootPath: ./webapp/localService/ZHCM_TLPROF_MAN_SRV/data
+            generateMockData: true
+          - urlPath: /sap/opu/odata/sap/ZHR_TLPROF_MAN_SRV
+            metadataXmlPath: ./webapp/localService/ZHR_TLPROF_MAN_SRV/metadata.xml
+            mockdataRootPath: ./webapp/localService/ZHR_TLPROF_MAN_SRV/mockdata
+            generateMockData: true
+        annotations: []

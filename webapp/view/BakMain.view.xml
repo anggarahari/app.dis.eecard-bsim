@@ -1,4 +1,4 @@
-<mvc:View controllerName="smm.hcmapp.dis.eecard3.controller.Main" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc"
+<mvc:View controllerName="bsim.hcmapp.dis.eecard3.controller.Main" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m" xmlns:semantic="sap.m.semantic" xmlns:f="sap.f" xmlns:card="sap.f.cards" xmlns:layout="sap.ui.layout"
 	xmlns:form="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:mchart="sap.suite.ui.microchart" xmlns:uicom="sap.suite.ui.commons"
 	xmlns:viz="sap.viz.ui5.controls" xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds" xmlns:viz.data="sap.viz.ui5.data" displayBlock="true"

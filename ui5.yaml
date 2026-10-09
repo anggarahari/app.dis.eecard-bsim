@@ -1,6 +1,6 @@
 specVersion: "2.6"
 metadata:
-  name: smm.hcmapp.dis.eecard3
+  name: bsim.hcmapp.dis.eecard3
 type: application
 server:
   customMiddleware:
@@ -9,10 +9,13 @@ server:
       configuration:
         ignoreCertError: false
         backend:
+          - path: /sap/opu/odata/sap/ZHR_TLPROF_MAN_SRV
+            url: http://sap-app-dv.cd.banksinarmas.com:8011
+            client: "110"
+            destination: S4D
           - path: /sap
-            url: https://sapwdp.sinarmasmining.com:8002/
-            client: "100"
-            destination: FED
+            url: http://sap-app-dv.cd.banksinarmas.com:8011
+            client: '110'
         ui5:
           path:
             - /resources
@@ -28,5 +31,5 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: smm.hcmapp.dis.eecard3
+        component: bsim.hcmapp.dis.eecard3
         ui5Theme: sap_fiori_3

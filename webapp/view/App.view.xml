@@ -1,6 +1,6 @@
 <mvc:View xmlns:core="sap.ui.core"
 	xmlns:mvc="sap.ui.core.mvc"
-	xmlns="sap.m" controllerName="smm.hcmapp.dis.eecard3.controller.App"
+	xmlns="sap.m" controllerName="bsim.hcmapp.dis.eecard3.controller.App"
 	xmlns:html="http://www.w3.org/1999/xhtml">
 	<App id="App" busy="{appView>/busy}" busyIndicatorDelay="{appView>/delay}"/>
 </mvc:View>

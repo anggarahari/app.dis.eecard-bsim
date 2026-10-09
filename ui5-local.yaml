@@ -1,6 +1,6 @@
 specVersion: "2.4"
 metadata:
-  name: smm.hcmapp.dis.eecard3
+  name: bsim.hcmapp.dis.eecard3
 type: application
 framework:
   name: SAPUI5
@@ -32,10 +32,13 @@ server:
       configuration:
         ignoreCertError: false
         backend:
-          - path: /sap
-            url: https://sapwdp.sinarmasmining.com:8002/
-            client: "100"
+          - path: /sap/opu/odata/sap/ZHR_TLPROF_MAN_SRV
+            url: http://sap-app-dv.cd.banksinarmas.com:8011
+            client: "110"
             destination: FED
+          - path: /sap
+            url: http://sap-app-dv.cd.banksinarmas.com:8011
+            client: '110'
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -47,5 +50,5 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: smm.hcmapp.dis.eecard3
+        component: bsim.hcmapp.dis.eecard3
         ui5Theme: sap_fiori_3

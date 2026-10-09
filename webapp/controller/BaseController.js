@@ -2,7 +2,7 @@ sap.ui.define([
 	"sap/ui/core/mvc/Controller"
 ], function (Controller) {
 	"use strict";
-	return Controller.extend("smm.hcmapp.dis.eecard3.controller.BaseController", {
+	return Controller.extend("bsim.hcmapp.dis.eecard3.controller.BaseController", {
 		getRouter: function () {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},

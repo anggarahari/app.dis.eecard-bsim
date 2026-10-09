@@ -1,10 +1,10 @@
 sap.ui.define([
-	"smm/hcmapp/dis/eecard3/controller/BaseController",
+	"bsim/hcmapp/dis/eecard3/controller/BaseController",
 	"sap/ui/model/json/JSONModel"
 ], function (Controller, J) {
 	"use strict";
 
-	return Controller.extend("smm.hcmapp.dis.eecard3.controller.App", {
+	return Controller.extend("bsim.hcmapp.dis.eecard3.controller.App", {
 		onInit: function () {
 			this.setModel(new J({
 				busy: false,

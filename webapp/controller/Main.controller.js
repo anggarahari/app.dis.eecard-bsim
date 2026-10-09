@@ -2,15 +2,15 @@
 jQuery.sap.require("sap.m.BusyDialog");
 jQuery.sap.require("sap.m.MessageBox");
 sap.ui.define([
-	"smm/hcmapp/dis/eecard3/controller/BaseController",
-	"smm/hcmapp/dis/eecard3/utils/formatter",
+	"bsim/hcmapp/dis/eecard3/controller/BaseController",
+	"bsim/hcmapp/dis/eecard3/utils/formatter",
 	"sap/ui/model/json/JSONModel",
 	"sap/viz/ui5/format/ChartFormatter",
 	"sap/viz/ui5/api/env/Format"
 ], function (Controller, f, J, VizChartFormatter, VizFormat) {
 	"use strict";
 
-	return Controller.extend("smm.hcmapp.dis.eecard3.controller.Main", {
+	return Controller.extend("bsim.hcmapp.dis.eecard3.controller.Main", {
 		formatter: f,
 
 		onInit: function () {
@@ -24,8 +24,8 @@ sap.ui.define([
 				Year: new Date().getFullYear(),
 				isNewAttr: false
 			}), "appParams");
-			this._oVizFrame360Perf = this._oView.byId("idVizFrame360");
-			this._oVizFrame360Qua = this._oView.byId("idVizFrameQua");
+			// this._oVizFrame360Perf = this._oView.byId("idVizFrame360");
+			// this._oVizFrame360Qua = this._oView.byId("idVizFrameQua");
 			this._oVizFrameAgility = this._oView.byId("idVizFrameAgility");
 			this._loadData();
 		},
@@ -43,7 +43,7 @@ sap.ui.define([
 						// result.results[0].toAspiration.results[4].SubtypeId = "L";
 						oModel.setData(result.results[0]);
 						this._oView.setModel(oModel, "tlCard");
-						this._build360(result.results[0].toPerformance);
+						// this._build360(result.results[0].toPerformance);
 						this._buildCert(result.results[0].toTraining.results);
 						console.log(result.results[0].toAgility);
 						if (result.results[0].toAgility) {
@@ -61,159 +61,159 @@ sap.ui.define([
 			);
 		},
 
-		_build360: function (p) {
-			var formatPattern = VizChartFormatter.DefaultPattern;
-			VizFormat.numericFormatter(VizChartFormatter.getInstance());
-			this._oVizFrame360Perf.setVizProperties({
-				plotArea: {
-					dataLabel: {
-						formatString: formatPattern.SHORTFLOAT_MFD2,
-						visible: true
-					},
-					area: {
-						visible: true,
-						opacity: 0.7
-					},
-					gridline: {
-						visible: false
-					},
-					drawingEffect: "glossy",
-					polarAxis: {
-						title: {
-							visible: false
-						}
-					},
-					valueAxis: {
-						label: {
-							visible: false,
-							formatString: formatPattern.SHORTFLOAT_MFD2
-						},
-						title: {
-							visible: false
-						}
-					}
-				},
-				title: {
-					visible: true,
-					text: "360 Feedback: " + p.Score
-				},
-				legend: {
-					visible: false
-				},
-				general: {
-					layout: {
-						isFixedpadding: false
-					}
-				},
-				interaction: {
-					noninteractiveMode: true
-				}
-			});
-			this._oVizFrame360Perf.setVizScales({
-				valueAxis: {
-					min: 5
-				}
-			});
+		// _build360: function (p) {
+		// 	var formatPattern = VizChartFormatter.DefaultPattern;
+		// 	VizFormat.numericFormatter(VizChartFormatter.getInstance());
+		// 	this._oVizFrame360Perf.setVizProperties({
+		// 		plotArea: {
+		// 			dataLabel: {
+		// 				formatString: formatPattern.SHORTFLOAT_MFD2,
+		// 				visible: true
+		// 			},
+		// 			area: {
+		// 				visible: true,
+		// 				opacity: 0.7
+		// 			},
+		// 			gridline: {
+		// 				visible: false
+		// 			},
+		// 			drawingEffect: "glossy",
+		// 			polarAxis: {
+		// 				title: {
+		// 					visible: false
+		// 				}
+		// 			},
+		// 			valueAxis: {
+		// 				label: {
+		// 					visible: false,
+		// 					formatString: formatPattern.SHORTFLOAT_MFD2
+		// 				},
+		// 				title: {
+		// 					visible: false
+		// 				}
+		// 			}
+		// 		},
+		// 		title: {
+		// 			visible: true,
+		// 			text: "360 Feedback: " + p.Score
+		// 		},
+		// 		legend: {
+		// 			visible: false
+		// 		},
+		// 		general: {
+		// 			layout: {
+		// 				isFixedpadding: false
+		// 			}
+		// 		},
+		// 		interaction: {
+		// 			noninteractiveMode: true
+		// 		}
+		// 	});
+		// 	this._oVizFrame360Perf.setVizScales({
+		// 		valueAxis: {
+		// 			min: 5
+		// 		}
+		// 	});
 
-			var dataModel = new J({
-				"performa": [{
-					"Performance Name": "Loyalty",
-					"Score": p.Loyalty
-				}, {
-					"Performance Name": "Innovation",
-					"Score": p.Innovation
-				}, {
-					"Performance Name": this.getResourceBundle().getText("vizLabelContImp"), //"Continous Improvement",
-					"Score": p.ContinousImprovement
-				}, {
-					"Performance Name": "Commitment",
-					"Score": p.Commitment
-				}, {
-					"Performance Name": "Positive Attitude",
-					"Score": p.PositiveAttitude
-				}, {
-					"Performance Name": "Integrity",
-					"Score": p.Integrity
-				}]
-			});
-			this._oVizFrame360Perf.setModel(dataModel);
-		},
+		// 	var dataModel = new J({
+		// 		"performa": [{
+		// 			"Performance Name": "Loyalty",
+		// 			"Score": p.Loyalty
+		// 		}, {
+		// 			"Performance Name": "Innovation",
+		// 			"Score": p.Innovation
+		// 		}, {
+		// 			"Performance Name": this.getResourceBundle().getText("vizLabelContImp"), //"Continous Improvement",
+		// 			"Score": p.ContinousImprovement
+		// 		}, {
+		// 			"Performance Name": "Commitment",
+		// 			"Score": p.Commitment
+		// 		}, {
+		// 			"Performance Name": "Positive Attitude",
+		// 			"Score": p.PositiveAttitude
+		// 		}, {
+		// 			"Performance Name": "Integrity",
+		// 			"Score": p.Integrity
+		// 		}]
+		// 	});
+		// 	this._oVizFrame360Perf.setModel(dataModel);
+		// },
 
-		_buildQuali: function (q) {
-			var oQuaModel = new J(),
-				aQua = [];
+		// _buildQuali: function (q) {
+		// 	var oQuaModel = new J(),
+		// 		aQua = [];
 
-			this._oVizFrame360Qua.setVizProperties({
-				plotArea: {
-					gridline: {
-						visible: true,
-						color: "#bfbfbf"
-					},
-					gap: {
-						visible: true
-					},
-					primaryScale: {
-						autoMaxValue: false,
-						autoMinValue: false,
-						maxValue: 5,
-						minValue: 5
-					},
-					dataPointSize: {
-						max: 20,
-						min: 20
-					},
-					forecastColor: "#f1f3f3",
-					isFixedDataPointSize: true
-				},
-				interaction: {
-					noninteractiveMode: true,
-					selectability: {
-						mode: "SINGLE"
-					}
-				},
-				title: {
-					visible: false,
-					text: "Employee Qualification (Soft Competencies)"
-				},
-				legendGroup: {
-					layout: {
-						alignment: "center",
-						position: "bottom"
-					}
-				},
-				valueAxis: {
-					title: {
-						visible: false
-					},
-					label: {
-						allowDecimals: false
-					}
-				},
-				categoryAxis: {
-					title: {
-						visible: false
-					}
-				}
-			});
+		// 	this._oVizFrame360Qua.setVizProperties({
+		// 		plotArea: {
+		// 			gridline: {
+		// 				visible: true,
+		// 				color: "#bfbfbf"
+		// 			},
+		// 			gap: {
+		// 				visible: true
+		// 			},
+		// 			primaryScale: {
+		// 				autoMaxValue: false,
+		// 				autoMinValue: false,
+		// 				maxValue: 5,
+		// 				minValue: 5
+		// 			},
+		// 			dataPointSize: {
+		// 				max: 20,
+		// 				min: 20
+		// 			},
+		// 			forecastColor: "#f1f3f3",
+		// 			isFixedDataPointSize: true
+		// 		},
+		// 		interaction: {
+		// 			noninteractiveMode: true,
+		// 			selectability: {
+		// 				mode: "SINGLE"
+		// 			}
+		// 		},
+		// 		title: {
+		// 			visible: false,
+		// 			text: "Employee Qualification (Soft Competencies)"
+		// 		},
+		// 		legendGroup: {
+		// 			layout: {
+		// 				alignment: "center",
+		// 				position: "bottom"
+		// 			}
+		// 		},
+		// 		valueAxis: {
+		// 			title: {
+		// 				visible: false
+		// 			},
+		// 			label: {
+		// 				allowDecimals: false
+		// 			}
+		// 		},
+		// 		categoryAxis: {
+		// 			title: {
+		// 				visible: false
+		// 			}
+		// 		}
+		// 	});
 
-			this._oVizFrame360Qua.setVizScales({
-				"feed": "actualValues",
-				"max": 5,
-				"min": 5
-			}, {
-				replace: true
-			});
+		// 	this._oVizFrame360Qua.setVizScales({
+		// 		"feed": "actualValues",
+		// 		"max": 5,
+		// 		"min": 5
+		// 	}, {
+		// 		replace: true
+		// 	});
 
-			q.forEach(function (E) {
-				if (E.CompetencyType === "S") {
-					aQua.push(E);
-				}
-			});
-			oQuaModel.setData({
-				qualific: aQua
-			});
-			this._oVizFrame360Qua.setModel(oQuaModel);
-		},
+		// 	q.forEach(function (E) {
+		// 		if (E.CompetencyType === "S") {
+		// 			aQua.push(E);
+		// 		}
+		// 	});
+		// 	oQuaModel.setData({
+		// 		qualific: aQua
+		// 	});
+		// 	this._oVizFrame360Qua.setModel(oQuaModel);
+		// },
 
 		_buildCert: function (t) {
 			var oParamModel = this.getModel("appParams"),
@@ -381,7 +381,7 @@ sap.ui.define([
 				oDateF = sap.ui.core.format.DateFormat.getDateInstance({
 					pattern: "yyyy-MM-ddTHH:mm:ss"
 				}),
-				sUrl = "/sap/opu/odata/sap/ZHCM_TLPROF_MAN_SRV/PdfFormSet(EmployeeNumber='" + oData.EmployeeNumber + "',EndDate=datetime'" +
+				sUrl = "/sap/opu/odata/sap/ZHR_TLPROF_MAN_SRV/PdfFormSet(EmployeeNumber='" + oData.EmployeeNumber + "',EndDate=datetime'" +
 					jQuery.sap.encodeURL(oDateF.format(oData.toProfile.ValidTo)) + "',BeginDate=datetime'" +
 					jQuery.sap.encodeURL(oDateF.format(oData.toProfile.ValidFrom)) + "',TemplateId='1')/$value";
 
@@ -401,16 +401,16 @@ sap.ui.define([
 				// aDData = oD.getProperty("/"),
 				aTData = oT.getProperty("/data"),
 				aSData = oS.getProperty("/data"),
-				oCard = oP.getProperty("/"),
+				oCard = oP.getProperty("/");
 
-				oVizFrame360 = this._oView.byId("idVizFrame360"),
-				sSVG360 = oVizFrame360.exportToSVGString({
-					width: 1392,
-					height: 912
-				}).replace(/translate /gm, "translate"),
-				oCanvasHTML360 = document.createElement("canvas");
-			canvg(oCanvasHTML360, sSVG360);
-			let sViz360 = oCanvasHTML360.toDataURL("image/png");
+				// oVizFrame360 = this._oView.byId("idVizFrame360"),
+				// sSVG360 = oVizFrame360.exportToSVGString({
+				// 	width: 1392,
+				// 	height: 912
+				// }).replace(/translate /gm, "translate"),
+				// oCanvasHTML360 = document.createElement("canvas");
+			// canvg(oCanvasHTML360, sSVG360);
+			// let sViz360 = oCanvasHTML360.toDataURL("image/png");
 
 			if (oCard.isNewAttr) {
 				let oVizFrameAgility = this.getView().byId("idVizFrameAgility"),
@@ -584,23 +584,23 @@ sap.ui.define([
 				oDoc.roundedRect(8, iTopLStart, 93, iH + 2, 2, 2, "S");
 				oDoc.line(8, iTopLStart + 7, 101, iTopLStart + 7);
 
-				/***************Performance 360***************/
-				oDoc.setFontSize(11);
-				iTopL = iTopL + 3;
-				iH = 7;
-				iTopLStart = iTopL;
-				iTopL = iTopL + 5;
-				oDoc.setTextColor(f.getColorHex(""));
-				oDoc.setFontStyle("bold");
-				oDoc.text("Performance - 360\xB0", 9, iTopL);
-				oDoc.setFontStyle("normal");
-				oDoc.setFontSize(9);
-				iTopL = iTopL + 1;
-				oDoc.addImage(sViz360, "PNG", 9, iTopL, 92, 60);
-				iTopL = iTopL + 62;
-				iH = iH + 55;
-				oDoc.roundedRect(8, iTopLStart, 93, iH + 2, 2, 2, "S");
-				oDoc.line(8, iTopLStart + 7, 101, iTopLStart + 7);
+				// /***************Performance 360***************/
+				// oDoc.setFontSize(11);
+				// iTopL = iTopL + 3;
+				// iH = 7;
+				// iTopLStart = iTopL;
+				// iTopL = iTopL + 5;
+				// oDoc.setTextColor(f.getColorHex(""));
+				// oDoc.setFontStyle("bold");
+				// oDoc.text("Performance - 360\xB0", 9, iTopL);
+				// oDoc.setFontStyle("normal");
+				// oDoc.setFontSize(9);
+				// iTopL = iTopL + 1;
+				// oDoc.addImage(sViz360, "PNG", 9, iTopL, 92, 60);
+				// iTopL = iTopL + 62;
+				// iH = iH + 55;
+				// oDoc.roundedRect(8, iTopLStart, 93, iH + 2, 2, 2, "S");
+				// oDoc.line(8, iTopLStart + 7, 101, iTopLStart + 7);
 
 				/***************Knowledge***************/
 				oDoc.setFontSize(11);
@@ -847,46 +847,46 @@ sap.ui.define([
 				oDoc.roundedRect(196, 5, 93, iH + 2, 2, 2, "S");
 				oDoc.line(196, 12, 289, 12);
 
-				/***************Current Roles***************/
-				oDoc.setFontSize(11);
-				iTopR = iTopR + 3;
-				iH = 7;
-				iTopRStart = iTopR;
-				iTopR = iTopR + 5;
-				oDoc.setFontStyle("bold");
-				oDoc.text("Current Roles", 197, iTopR);
-				oDoc.setFontStyle("normal");
-				oDoc.setFontSize(9);
-				aData = oCardData.toCurrentRoles.results;
-				iTopR = iTopR + 7;
-				iL = 0;
-				for (i = 0; i < aData.length; i++) {
-					iL = iL + 1;
-					if (iL > 5) {
-						break;
-					}
-					aText = oDoc.splitTextToSize(aData[i].KpiName, 91);
-					oDoc.setFontStyle("bold");
-					oDoc.text(aText, 197, iTopR);
-					oDoc.setFontStyle("normal");
-					iTopR = iTopR + (4 * aText.length);
-					iH = iH + (4 * aText.length);
-					aText = oDoc.splitTextToSize(aData[i].KpiDesc, 91);
-					oDoc.text(aText, 197, iTopR);
-					iTopR = iTopR + (4 * aText.length);
-					iH = iH + (4 * aText.length);
-					iTopR = iTopR + 1;
-					iH = iH + 1;
-				}
-				if (iL === 0) {
-					iH = iH + 5;
-					oDoc.text("N/A", 197, iTopR);
-					iTopR = iTopR + 1;
-				} else {
-					iTopR = iTopR - (4 * aText.length);
-				}
-				oDoc.roundedRect(196, iTopRStart, 93, iH + 2, 2, 2, "S");
-				oDoc.line(196, iTopRStart + 7, 289, iTopRStart + 7);
+				// /***************Current Roles***************/
+				// oDoc.setFontSize(11);
+				// iTopR = iTopR + 3;
+				// iH = 7;
+				// iTopRStart = iTopR;
+				// iTopR = iTopR + 5;
+				// oDoc.setFontStyle("bold");
+				// oDoc.text("Current Roles", 197, iTopR);
+				// oDoc.setFontStyle("normal");
+				// oDoc.setFontSize(9);
+				// aData = oCardData.toCurrentRoles.results;
+				// iTopR = iTopR + 7;
+				// iL = 0;
+				// for (i = 0; i < aData.length; i++) {
+				// 	iL = iL + 1;
+				// 	if (iL > 5) {
+				// 		break;
+				// 	}
+				// 	aText = oDoc.splitTextToSize(aData[i].KpiName, 91);
+				// 	oDoc.setFontStyle("bold");
+				// 	oDoc.text(aText, 197, iTopR);
+				// 	oDoc.setFontStyle("normal");
+				// 	iTopR = iTopR + (4 * aText.length);
+				// 	iH = iH + (4 * aText.length);
+				// 	aText = oDoc.splitTextToSize(aData[i].KpiDesc, 91);
+				// 	oDoc.text(aText, 197, iTopR);
+				// 	iTopR = iTopR + (4 * aText.length);
+				// 	iH = iH + (4 * aText.length);
+				// 	iTopR = iTopR + 1;
+				// 	iH = iH + 1;
+				// }
+				// if (iL === 0) {
+				// 	iH = iH + 5;
+				// 	oDoc.text("N/A", 197, iTopR);
+				// 	iTopR = iTopR + 1;
+				// } else {
+				// 	iTopR = iTopR - (4 * aText.length);
+				// }
+				// oDoc.roundedRect(196, iTopRStart, 93, iH + 2, 2, 2, "S");
+				// oDoc.line(196, iTopRStart + 7, 289, iTopRStart + 7);
 
 				/***************Attribute***************/
 				if (oCardData.toAgility && oCard.isNewAttr) {

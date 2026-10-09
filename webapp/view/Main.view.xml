@@ -1,4 +1,4 @@
-<mvc:View controllerName="smm.hcmapp.dis.eecard3.controller.Main"
+<mvc:View controllerName="bsim.hcmapp.dis.eecard3.controller.Main"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:semantic="sap.m.semantic"
@@ -174,7 +174,7 @@
                                 </VBox>
                             </f:content>
                         </f:Card>
-                        <f:Card class="sapUiSmallMargin">
+                        <!-- <f:Card class="sapUiSmallMargin">
                             <f:layoutData>
                                 <f:GridContainerItemLayoutData columns="4" rows="11" />
                             </f:layoutData>
@@ -190,7 +190,7 @@
                                     </FlexBox>
                                 </ScrollContainer>
                             </f:content>
-                        </f:Card>
+                        </f:Card> -->
                         <f:Card class="sapUiSmallMargin">
                             <f:layoutData>
                                 <f:GridContainerItemLayoutData columns="4" rows="6" />
@@ -297,7 +297,7 @@
                                 </ScrollContainer>
                             </f:content>
                         </f:Card>
-                        <f:Card class="sapUiSmallMargin">
+                        <!-- <f:Card class="sapUiSmallMargin">
                             <f:layoutData>
                                 <f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 5 }" rows="13" />
                             </f:layoutData>
@@ -324,7 +324,7 @@
                                     </viz:VizFrame>
                                 </FlexBox>
                             </f:content>
-                        </f:Card>
+                        </f:Card> -->
                         <f:Card class="sapUiSmallMargin">
                             <f:layoutData>
                                 <f:GridContainerItemLayoutData columns="{= ${device>/system/phone} ? 4 : 7 }" rows="13" />
